@@ -25,28 +25,26 @@ def measure(P):
     load_h = (d(P["load_BL"], P["load_TL"]), d(P["load_BR"], P["load_TR"]))
     r["px"] = dict(pallet_len=pal_len, pallet_h_left=pal_h[0], pallet_h_right=pal_h[1], load_len=load_len, load_h_left=load_h[0], load_h_right=load_h[1])
     # --- scales, mm per px ---
-    s_pal_h = PAL_H / np.mean(pal_h)                                          # vertical, from pallet height (measured at the load)
+    s_pal_h = PAL_H / pal_h[0]                                                # vertical, from pallet height at the LEFT end (next to the mast)
     s_truck_v = TRUCK_H1 / abs(P["ref_front_wheel_ground"][1] - P["ref_mast_top"][1])      # vertical, from mast height
     s_truck_h = TRUCK_L2 / abs(P["ref_carriage_face"][0] - P["ref_truck_rear"][0])         # horizontal, truck rear -> fork face
     s_len = {c: L / pal_len for c, L in CASES.items()}                         # horizontal, "single scale" from pallet length
     r["scale"] = dict(pallet_height=s_pal_h, truck_vertical=s_truck_v, truck_horizontal=s_truck_h, **{"pallet_length_" + c[0]: v for c, v in s_len.items()})
-    # --- load height (m): vertical scale only, so foreshortening does not matter ---
-    h_px = np.mean(load_h)
-    H = {"pallet144": h_px * s_pal_h / 1000, "truck": h_px * s_truck_v / 1000}
-    r["H_m"] = H; H_lo, H_hi = min(H.values()), max(H.values())
+    # --- load height (m): height of the LEFT edge (next to the mast/carriage) x the vertical scale valid at that depth ---
+    h_l, h_r = load_h; rho = h_l / h_r                      # rho < 1: the right end is nearer to the camera
+    H = {"pallet144": h_l * s_pal_h / 1000, "truck": h_l * s_truck_v / 1000}
+    r["H_m"] = H; H_lo, H_hi = min(H.values()), max(H.values()); r["rho_left_over_right"] = rho
     # --- case C: length of the long face (m), with perspective ---
-    # The nearer end of the face looks taller. Heights give the distance difference between the two ends:
-    #   distance ~ 1/height, so  dZ = Z_left * (h_left/h_right - 1),   and  Z_left = focal * (mm per px at the left end)
-    # The face is the diagonal of a right triangle: sideways part Lx (what we measure in px) and depth part dZ.
-    rho = load_h[0] / load_h[1]
+    # The scale at the right end is s_R = s_L * h_left / h_right (a box has equal edge heights). Sideways part Lx = pixels x mean scale.
+    # Depth part dz = difference of the distances of the two ends = focal * (s_R - s_L)   (distance = focal * mm-per-px).
+    # The face is the diagonal of the right triangle (Lx, dz).
     LC = {}
-    for sname, s_v in (("pallet144", s_pal_h), ("truck", s_truck_v)):
-        Lx = load_len * s_v / 1000
+    for sname, s_L in (("pallet144", s_pal_h), ("truck", s_truck_v)):
+        s_R = s_L * rho; Lx = load_len * (s_L + s_R) / 2 / 1000
         for f in FOCAL_PX:
-            z_left = f * s_v * (np.mean(load_h) / load_h[0]) / 1000
-            dz = z_left * (rho - 1)
+            dz = f * abs(s_R - s_L) / 1000
             LC[(sname, f)] = dict(L=float(np.hypot(Lx, dz)), Lx=float(Lx), dz=float(dz), turn_deg=float(np.degrees(np.arctan2(dz, Lx))))
-    r["C"] = {f"{k[0]}/f{k[1]}": v for k, v in LC.items()}; r["rho_left_over_right"] = rho
+    r["C"] = {f"{k[0]}/f{k[1]}": v for k, v in LC.items()}
     r["L_C_m"] = (min(v["L"] for v in LC.values()), max(v["L"] for v in LC.values()))
     # --- vertical-plane homography: map the pallet FRONT FACE quad to a (length x 144 mm) rectangle ---
     homog = {}
@@ -63,7 +61,7 @@ def measure(P):
     vc = lambda w: [v["L"] * w * H[k[0]] for k, v in LC.items()]      # each length paired with the height from the SAME scale
     V["C measured length"] = {w: (min(vc(w)), max(vc(w))) for w in WIDTHS}
     r["V_load_only"] = V
-    r["V_single_scale"] = {c: {w: (L / 1000) * w * (h_px * s_len[c] / 1000) for w in WIDTHS} for c, L in CASES.items()}   # naive: one scale for both directions
+    r["V_single_scale"] = {c: {w: (L / 1000) * w * (np.mean(load_h) * s_len[c] / 1000) for w in WIDTHS} for c, L in CASES.items()}   # naive: one scale for both directions
     r["pallet_ratio_len_over_h"] = pal_len / np.mean(pal_h)
     return r
 

@@ -6,3 +6,4 @@ video.mp4
 __pycache__/
 .ipynb_checkpoints/
 video.info.json
+extra_pics/

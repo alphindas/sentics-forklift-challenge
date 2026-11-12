@@ -3,8 +3,8 @@
 **Problem.** In a public Linde video (https://www.youtube.com/watch?v=RCqa8Kojlw8, pass-by at about 20-22 s) a forklift drives past with a
 load of stacked crates on pallets. Estimate the load volume in m³ from the video alone. This is a prototype; it is not finished (tests, notebook, final review still open).
 
-> **Status: no single final number.** Two scenarios (B and C) are carried side by side, neither is "main". The reason is one unverified fact:
-> **the crate type in this video is NOT verified** (see Assumptions 1). Case A (one EUR pallet) is excluded by the clicks.
+> **Status: no single final number.** Scenarios B, C and D are carried side by side, none is "main". The reason is two unverified facts:
+> **the crate type and the pallet layout in this video are NOT verified** (see Assumptions 1 and 2). Case A (one EUR pallet) is excluded.
 
 ## Method in plain steps
 1. Download the video (`yt-dlp`, not stored in the repo) and pick sharp frames of the pass (`src/extract_frames.py`).
@@ -17,23 +17,38 @@ load of stacked crates on pallets. Estimate the load volume in m³ from the vide
 5. Crate checks: count layers and crates, compare with real crate sizes (`src/crates.py`).
 6. Monte Carlo, 10,000 runs, inputs: click error, scale bias, fill factor, pallet tolerance, focal length (`src/uncertainty.py`).
 
-## The two scenarios (load only, width 0.8 m, 80 % range from the Monte Carlo, `outputs/uncertainty.json`)
-| | **C: length from clicks + truck geometry** | **B: length from the crate count** |
-|---|---|---|
-| Long face | about 1.7 m (from pixels, truck scale, perspective) | 2.4 m (8 crates x 0.300 m = two EUR pallets in a row) |
-| Height | 1.16 m (truck scale; = 4 layers x 290 mm) | 4 layers x 0.29-0.36 m = 1.16-1.44 m (crate height not measured) |
-| Load only | **1.51 m³ (1.27 - 1.77)** | **2.37 m³ (2.15 - 2.59)** |
-| Load + pallets | 1.70 m³ (1.45 - 1.98) | 2.65 m³ (2.43 - 2.87) |
-| If width is 1.2 m | 2.26 m³ | 3.55 m³ |
-| What supports it | truck datasheet distances, perspective, 290 mm crates exist (20 x 0.5 L, one 12 x 0.75 L) | 8 crates counted along the lower rows, 4 along 1200 mm = EUR pallet layout |
-| What argues against it | 8-9 crates in 1.7 m means a crate side of only about 0.2 m | needs crates 390-420 mm per layer if the image scale is right; no catalogue crate is above 360 mm |
+## Scenarios (width and crate type are not certain; none is chosen)
+Load-only volume, 80 % range from the Monte Carlo (`outputs/uncertainty.json`). Frames #1086/#1092/#1098 (clicked), pooled. Heights now use the **left-end** height with the truck scale
+(1.25 m = 4 layers x 312 mm); an earlier version used the mean height and understated it by about 8 %.
 
-* **Case A, one EUR pallet (1.2 m): excluded.** The pallet long edge is about 14 times its height in the image (13.8-14.6 in all frames). A real 1200 x 144 mm face is 8.3, and turning the face away can only make that ratio smaller.
-  It would also need a load only 2.6-3.0 layers tall. (If it were true: 1.06 m³, 0.97-1.15.)
-* The old "B with truck-scale height" number (2.13 m³) is **not** shown as a scenario: it combines a 2.4 m length with a 290 mm crate height, which would be 5.2-6.0 layers. It is kept in `outputs/uncertainty.json` only for comparison.
-* A possible middle case also exists: 8 crates of 266 mm = 2.13 m, which needs crates of about 345-385 mm (borderline against the tallest 12-bottle crates, 333-360 mm). Not carried as a scenario.
-* **The two scenarios differ because the two scales differ.** In both, volume is roughly (face area) x width. The face area is about 2.0 m² with the truck scale and about 3.0 m² with the pallet scale.
-* These ranges are **inside each scenario**. They do not include "which scenario is true" or the width (0.8 m vs 1.2 m, shown separately).
+| | A: 1 EUR pallet | B: 2 pallets in a row (8 crates x 300 mm) | C: length from clicks | D: 3 pallets, 800 mm side along the forks |
+|---|---|---|---|---|
+| Length x width | 1.2 x 0.8 m | 2.4 x 0.8 m | about 1.8 x 0.8 m | 2.4 x 1.2 m |
+| Height | 1.25 m (image) | 4 x 0.29-0.36 m | 1.25 m (image) | 4 x 0.310-0.333 m (12 x 0.75 L crate 400x266) |
+| Load only | 1.14 (1.04-1.24) | 2.37 (2.15-2.59) | 1.75 (1.47-2.06) | **3.56 (3.38-3.74)**; crates x crate volume (108 crates): 3.70 (3.59-3.80) |
+| Load + pallets | 1.27 | 2.65 | 1.96 | 3.97 |
+| Width 1.2 m instead of 0.8 m | 1.70 | 3.55 | 2.62 | (already 1.2 m) |
+
+### Consistency table (what each scenario has to explain)
+Facts read from the frames: **9 crate columns on every row** (frame #999, where the left end is visible), **4 layers**, **3 white labels, one per 3 columns** (spacing 3.1, 3.3, 3.0 columns in #999; 3.2 in #1008; 3.0 in #1092),
+**about 9 pallet feet** in 3 groups of 3 (8 clearly seen in #999 plus one at the frame edge; two pairs of feet side by side where two pallets would meet).
+
+| Test | A | B | C | D |
+|---|---|---|---|---|
+| 9 columns, 3 labels, 9 feet | no | no (expects 8 columns, 2 labels, 6 feet) | not tested | **yes** |
+| Length vs measured (#999: 2.45-2.72 m, proposed points; #1092: 2.05-2.20 pallet scale, 1.79-1.92 truck scale) | no (1.2 m) | yes for #999 and pallet scale, 25 % long for #1092 truck scale | yes for #1092 truck scale, 30 % short for #999 | same as B |
+| Height 1.25-1.5 m measured (4 layers = 310-375 mm per layer) | ok | ok | ok | **yes** (1.24-1.33 m) |
+| Crate cell width/height measured 0.81-0.91 (apparent, from window pitch) | - | 300 x 290 needs a 24-37 deg turn (turn estimate 12-27 deg): borderline | borderline | 266 x 310-333 predicts 0.82-0.88: **fits** (needs a nearly frontal face) |
+| Fork tips (datasheet 1200 or 1800 mm) | fits | 2.4 m deep: overhangs 1.2 / 0.6 m | 1.8 m fits 1800 mm forks | same as B: pallet 3 hangs 1.2 m (1200 mm forks) or 0.6 m (1800 mm forks) beyond the tips |
+| Verified crate for the count | - | 300 mm side: 20 x 0.5 L only | no crate with a 200 mm side along 9 columns in 1.8 m (9 x 0.2) | 12 x 0.75 L crate 400 x 266 exists (Delbrouck), 9 per layer and 4 layers as in the Wasserhelden pallet data |
+
+**What survives.** A is excluded (counts and length). B as defined does not survive the counts (it needs 8 columns, not 9). C survives only on one frame's truck scale and conflicts with the counts, with frame #999, and with
+a plain 266/300 crate. D survives the counts, the length (on 3 of 4 estimates), the height and the crate type, but it has to explain why the third pallet hangs over the fork tips, and it differs by 20-25 % from the #1092 truck-scale length.
+The datasheet lists no fork longer than 1800 mm for the E80 but mentions "hook-on and integrated attachments" without sizes, so a longer reach is possible but unverified. No scenario is selected here.
+
+* **Same load, two views.** In #999 the right end is nearer (edge height ratio 0.80); in #1092 the left end is nearer (1.17). The truck swings during the pass. With the pallet-height scale the two frames give 2.45-2.56 m and 2.05-2.20 m
+  (12 % apart); with the truck scale 2.60-2.72 m and 1.79-1.92 m (about 40 % apart). So the truck scale at #1092 is the least reliable number. #999 values come from points **read by eye by Claude, not clicked by you**.
+* Case A is excluded: the pallet long edge is about 14 times its height in the image (a 1200 x 144 mm face would be 8.3).
 
 ## Where the crate type came from (and did not)
 * Stickers on the crates were cropped at full resolution and upscaled 6 times (`outputs/stickers_sheet.png`): they show paper labels with text lines and two barcodes. **Nothing is readable** (no brand, pack size or article number).
@@ -55,7 +70,9 @@ load of stacked crates on pallets. Estimate the load volume in m³ from the vide
 8. Fill factor 0.90-1.00 (share of the bounding box that is filled). Click error: 2-5 px for sharp points, 10 px for blurry points.
 9. Crate count: 4 layers (counted by two people, re-checked on a close crop), 8 crates along the lower rows (9 in the top row, left end hidden by the fork carriage).
 10. Frame #1098: the "truck rear" click is a different feature than in the other frames; it is not used for volumes.
-11. Frames #1086-#1098 are only 0.1-0.24 s apart; their errors are correlated. Earlier frames (#995-#1015, about 19.9-20.4 s) show the face closer to side-on and look better; they are not clicked yet.
+11. Frames #1086-#1098 are only 0.1-0.24 s apart; their errors are correlated. Frame #999 (19.98 s) shows the whole face from the other side of the turn; its corner points were **read by eye by Claude and are not verified** (`src/early_frames.py`).
+12. Extra frames used (not stored in the repo, see timestamps): green-crate close-up 16.0-17.5 s; blue-crate loads 115.4 s, 117.1 s, 138.5-139.6 s, 140-142 s; early pass 19.7-20.3 s. In the close-up the bottle labels read "Carolinen naturelle".
+13. Blue-crate loads (Carolinen crates, 5 layers) show a seam in the middle of the pallet and 3 crates per pallet along a face, with 6 crates across in the front view. This suggests the plant carries several pallets together, but it does not fix the crate size.
 
 ## Sources
 * Linde E60/E80 datasheet (series 1279): https://www.linde-mh.com/media/Datasheets/EN_ds_e60_e80_1279_en_b_0224_view.pdf
@@ -66,4 +83,4 @@ load of stacked crates on pallets. Estimate the load volume in m³ from the vide
 * Video: https://www.youtube.com/watch?v=RCqa8Kojlw8 (frames at 21.72 s, 21.84 s, 21.96 s)
 
 ## Still open
-Tests (Step 5), notebook and `results.json` (Step 6), "Where this would fail" list, pitch script, final self-review.
+Click frame #999 (and one more early frame) to replace the proposed points; tests (Step 5), notebook and `results.json` (Step 6), "Where this would fail" list, pitch script, final self-review.

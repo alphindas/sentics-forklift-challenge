@@ -13,7 +13,7 @@ BLURRY_SD = 10.0                                                                
 NEED = ["load_BL", "load_BR", "load_TL", "load_TR", "ref_mast_top", "ref_front_wheel_ground", "pallet_BL", "pallet_BR", "pallet_TL", "pallet_TR"]
 PALLET_V = PAL_H / 1000                      # m, pallet height used for "load + pallets"
 RANGES = {   # (low, high) uniform unless noted. ALL ASSUMED, see README.
-    "scale_bias": (-0.10, 0.10),   # truck scale: mast and wheel are at different depths -> +-10 %
+    "scale_bias": (-0.10, 0.10),   # truck scale: mast and wheel are at different depths -> +-10 % (assumed)
     "fill":       (0.90, 1.00),    # share of the bounding box that is really filled (crate stack with small gaps)
     "focal_px":   (800, 1400),     # lens; upper end from the truck geometry (src/focal check), lower end = wide-angle guess
     "gap_m":      (0.0, 0.03),     # gap between two pallets in a row (case B only)
@@ -42,16 +42,16 @@ def simulate(case, vary, width=0.8, scale="truck", seed=1):
             noise = rng.normal(0, 1, (N, 2)) * sd.reshape(-1, 1) if on("clicks") else np.zeros((N, 2))
             pt[n] = np.array(P[n], float) + noise
         dist = lambda a, b: np.hypot(*(pt[a] - pt[b]).T)
-        hl, hr = dist("load_BL", "load_TL"), dist("load_BR", "load_TR"); hm = (hl + hr) / 2
-        if scale == "truck":                      # MAIN height ruler: mast height / pixels from mast top to floor under the front wheel
-            s_v = TRUCK_H1 / np.abs(pt["ref_front_wheel_ground"][:, 1] - pt["ref_mast_top"][:, 1]) * (1 + bias)
-        else:                                     # WEAK cross-check: pallet height 144 mm on ~30 px
-            s_v = PAL_H / ((dist("pallet_BL", "pallet_TL") + dist("pallet_BR", "pallet_TR")) / 2)
-        H = hm * s_v / 1000
-        if case == "C":                           # measured length, with the perspective turn of the face (see measure.py)
+        hl, hr = dist("load_BL", "load_TL"), dist("load_BR", "load_TR")
+        if scale == "truck":                      # height ruler: mast height / pixels from mast top to floor under the front wheel (valid at the LEFT end)
+            s_L = TRUCK_H1 / np.abs(pt["ref_front_wheel_ground"][:, 1] - pt["ref_mast_top"][:, 1]) * (1 + bias)
+        else:                                     # weak cross-check: pallet height 144 mm on ~30 px at the left end
+            s_L = PAL_H / dist("pallet_BL", "pallet_TL")
+        H = hl * s_L / 1000
+        if case == "C":                           # measured length with perspective (see measure.py)
             ll = (dist("load_BL", "load_BR") + dist("load_TL", "load_TR")) / 2
-            dz = np.abs(hl / hr - 1) * focal * s_v * (hm / hl) / 1000
-            L = np.hypot(ll * s_v / 1000, dz)
+            s_R = s_L * hl / hr
+            L = np.hypot(ll * (s_L + s_R) / 2 / 1000, focal * np.abs(s_R - s_L) / 1000)
         else: L = L_case[case]
         V = L * w * H * fill; out["V"].append(V); out["Vp"].append(V + L * w * PALLET_V); out["H"].append(H); out["L"].append(L)
     return {k: np.array(v) for k, v in out.items()}
@@ -68,6 +68,15 @@ def scenario_B_from_crates(width=0.8, seed=2):
     H = 4 * rng.uniform(0.29, 0.36, N); fill = rng.uniform(*RANGES["fill"], N)
     V = L * w * H * fill; return {"V": V, "Vp": V + L * w * PALLET_V, "H": H, "L": L}
 
+def scenario_D(seed=3):
+    """Scenario D: 3 EUR pallets in a row with the 800 mm side along the forks (L = 3 x 0.8 m), 3 crates of 400 mm across (W = 1.2 m),
+    4 layers of a 12 x 0.75 L crate 400 x 266 x 310-333 mm (Delbrouck catalogue; crate of the video NOT verified). Image supplies only the counts."""
+    rng = np.random.default_rng(seed)
+    L = 3 * 0.800 + rng.normal(0, 0.003, N) + rng.uniform(0, 0.03, N) * 2; w = 1.2 + rng.normal(0, RANGES["tol_m"], N)
+    H = 4 * rng.uniform(0.310, 0.333, N); fill = rng.uniform(*RANGES["fill"], N); V = L * w * H * fill
+    crates = 108 * 0.400 * 0.266 * rng.uniform(0.310, 0.333, N)           # second estimate: 108 crates x crate volume (no gaps, no fill)
+    return {"V": V, "Vp": V + 3 * 0.8 * 1.2 * PALLET_V, "H": H, "L": L, "V_crates": crates}
+
 if __name__ == "__main__":
     ALL = set(INPUTS); res = {}
     names = {"B": "B-with-image-scale (2.4 m long but 4 layers of 290 mm: NOT self-consistent, kept only for comparison)", "A": "A one EUR pallet (EXCLUDED by the clicks)", "C": "C length from clicks + truck geometry"}
@@ -79,6 +88,8 @@ if __name__ == "__main__":
         print(f"   height {res[c]['height_m']['median']:.2f} m | length {res[c]['length_m']['median']:.2f} m | per-frame medians (#1086, #1092, #1098): {[round(x, 2) for x in res[c]['per_frame_median_load_only']]}")
     rb = scenario_B_from_crates(); res["B_crates"] = {"load_only": q(rb["V"]), "load_plus_pallets": q(rb["Vp"]), "height_m": q(rb["H"]), "length_m": q(rb["L"])}
     print(f"SCENARIO B from crate count (L 2.4 m, H = 4 x 0.29-0.36 m, no image scale)\n   load only        {fmt(res['B_crates']['load_only'])}\n   load + pallets   {fmt(res['B_crates']['load_plus_pallets'])}")
+    rd = scenario_D(); res["D"] = {"load_only": q(rd["V"]), "load_plus_pallets": q(rd["Vp"]), "height_m": q(rd["H"]), "length_m": q(rd["L"]), "crates_x_crate_volume": q(rd["V_crates"])}
+    print(f"SCENARIO D (3 pallets, 800 mm side along the forks: 2.4 m x 1.2 m, 4 layers of 310-333 mm)\n   load only        {fmt(res['D']['load_only'])}\n   load + pallets   {fmt(res['D']['load_plus_pallets'])}\n   second estimate, 108 crates x crate volume {fmt(res['D']['crates_x_crate_volume'])}")
     print("\nScenarios outside the main range (NOT mixed into it):")
     scen = {"B_crates": {"width_1.2": q(scenario_B_from_crates(1.2)["V"])}}
     print(f"  SCENARIO B (crate count): width 1.2 m -> {fmt(scen['B_crates']['width_1.2'])}")
@@ -101,7 +112,7 @@ if __name__ == "__main__":
         s = sens[c]; ks = sorted(s, key=s.get); a.barh(ks, [s[k] for k in ks], color=["#444" if k == "all together" else "#3a7" for k in ks]); a.set_title(f"Case {c}: spread caused by one input alone"); a.set_xlabel("half of 80% range, % of median volume")
     plt.tight_layout(); plt.savefig("outputs/uncertainty_bars.png", dpi=130); plt.close()
     fig, a = plt.subplots(figsize=(8, 3.8))
-    for lab, v, col in (("A one EUR pallet (excluded)", simulate("A", ALL)["V"].mean(0), "#c63"), ("C: clicks + truck geometry", simulate("C", ALL)["V"].mean(0), "#3a7"), ("B: crate count (2.4 m)", scenario_B_from_crates()["V"], "#37a")):
+    for lab, v, col in (("A one EUR pallet (excluded)", simulate("A", ALL)["V"].mean(0), "#c63"), ("C: clicks + truck geometry", simulate("C", ALL)["V"].mean(0), "#3a7"), ("B: crate count (2.4 m x 0.8 m)", scenario_B_from_crates()["V"], "#37a"), ("D: 3 pallets (2.4 m x 1.2 m)", scenario_D()["V"], "#a37")):
         a.hist(v, bins=80, alpha=0.6, color=col, label=lab)
     a.set_xlabel("load-only volume, m3 (width 0.8 m)"); a.set_ylabel("runs out of 10,000"); a.legend(); plt.tight_layout(); plt.savefig("outputs/volume_hist.png", dpi=130); plt.close()
     fig, a = plt.subplots(figsize=(6, 3.4)); pf = simulate("C", ALL)["V"]
