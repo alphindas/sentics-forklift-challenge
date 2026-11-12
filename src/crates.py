@@ -39,3 +39,27 @@ for k, P in load_points().items():
     for side, nm in ((CRATE_W, "300"), (CRATE_L, "400")):
         L = N_ALONG[0] * side; s_req = 1000 * L / np.hypot(ll, (rho - 1) * 1100 * hm / hl)
         print(f"      {nm} mm side x {N_ALONG[0]} crates ({L:.1f} m): needs {hm*s_req/1000:.2f} m tall = {hm*s_req/1000/0.295:.1f} layers (f=1100)")
+
+# =====================================================================================================
+print("\n\n== REDO with the crate sizes found in a manufacturer catalogue (Delbrouck, https://www.delbrouck.de/en/getraenkekaesten/, read 2026-11-12).")
+print("   The crate TYPE IN THE VIDEO IS STILL NOT VERIFIED (stickers unreadable). These are real crates of the right family, not a match.")
+# (side that would run along the face in m, name, verified heights in m of crates with that footprint)
+FOOT = [(0.266, "400 x 266 (12 x 0.75 l / 12 x 1 l; 9 per EUR layer)", (0.310, 0.333)),
+        (0.300, "400 x 300 (20 x 0.5 l, 12 x 0.75 l, 12 x 1 l)",       (0.290, 0.360)),
+        (0.375, "375 x 266 (12 x 0.7 l)",                              (0.305, 0.305)),
+        (0.400, "400 side along the face (any 400 x 266/300 crate)",    (0.290, 0.360))]
+print("   Idea: n crates of side s give a face length L = n*s. That length fixes the scale (with perspective), the scale fixes the height,")
+print("   height / 4 layers = implied crate height. A candidate fits if the implied height lies inside the verified heights of that footprint (+-5 %).\n")
+for k, P in load_points().items():
+    hl, hr = d(P["load_BL"], P["load_TL"]), d(P["load_BR"], P["load_TR"]); hm = (hl + hr) / 2; rho = hl / hr
+    ll = (d(P["load_BL"], P["load_BR"]) + d(P["load_TL"], P["load_TR"])) / 2
+    ratio = lambda f: hm / np.hypot(ll, (rho - 1) * f * hm / hl)            # metres of height per metre of face length
+    print(f"  #{k}:")
+    for s, name, (h0, h1) in FOOT:
+        row = []
+        for n in N_ALONG:
+            L = n * s; himp = [L * ratio(f) / LAYERS for f in (800, 1400)]; lo, hi = min(himp), max(himp)
+            ok = hi >= h0 * 0.95 and lo <= h1 * 1.05
+            row.append(f"{n} crates = {L:.2f} m -> crate {lo*1000:.0f}-{hi*1000:.0f} mm {'FITS' if ok else 'no'}")
+        print(f"     {name}: " + " | ".join(row))
+    print(f"     for comparison, crate height from the truck scale = {hm*2888/abs(P['ref_front_wheel_ground'][1]-P['ref_mast_top'][1])/1000/LAYERS*1000:.0f} mm, from the pallet-height scale = {hm*PAL_H/np.mean([d(P['pallet_BL'],P['pallet_TL']),d(P['pallet_BR'],P['pallet_TR'])])/LAYERS:.0f} mm")

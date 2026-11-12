@@ -1,4 +1,4 @@
-"""Step 4: Monte Carlo (10,000 runs) for the load volume. Main case = B (two EUR pallets in a row), A and C are alternatives.
+"""Step 4: Monte Carlo (10,000 runs) for the load volume. Two scenarios side by side, neither is "main": C (length from clicks + truck geometry) and B (length from the crate count, height from crate heights). A (one EUR pallet) is excluded by the clicks.
 Plain idea: every input that we are not sure about gets a range; each run draws one value for each, computes the volume, and we
 look at the spread of the 10,000 results. All ranges are ASSUMPTIONS written in README.md. Nothing here decides which case is true.
 Clicks vary independently per frame; the other inputs (scale bias, lens, fill, tolerances) are shared by the three frames, because
@@ -59,17 +59,29 @@ def simulate(case, vary, width=0.8, scale="truck", seed=1):
 def q(x): return dict(median=float(np.median(x)), p10=float(np.percentile(x, 10)), p90=float(np.percentile(x, 90)), p2_5=float(np.percentile(x, 2.5)), p97_5=float(np.percentile(x, 97.5)))
 fmt = lambda s: f"{s['median']:.2f}  (80%: {s['p10']:.2f}-{s['p90']:.2f} | 95%: {s['p2_5']:.2f}-{s['p97_5']:.2f})"
 
+def scenario_B_from_crates(width=0.8, seed=2):
+    """Scenario B, self-consistent version: length from the CRATE COUNT (8 crates x 0.300 m = two EUR pallets), height from
+    4 layers x crate height, where the crate height is NOT measured in the image. 0.29-0.36 m is the range of 12-bottle and 20 x 0.5 l crates
+    in the Delbrouck catalogue (crate type of the video is NOT verified). The image only supplies the count (4 layers, 8 crates)."""
+    rng = np.random.default_rng(seed)
+    L = 8 * 0.300 + rng.normal(0, 0.003, N); w = width + rng.normal(0, RANGES["tol_m"], N)
+    H = 4 * rng.uniform(0.29, 0.36, N); fill = rng.uniform(*RANGES["fill"], N)
+    V = L * w * H * fill; return {"V": V, "Vp": V + L * w * PALLET_V, "H": H, "L": L}
+
 if __name__ == "__main__":
     ALL = set(INPUTS); res = {}
-    names = {"B": "B two pallets in a row (MAIN)", "A": "A one EUR pallet", "C": "C measured length"}
+    names = {"B": "B-with-image-scale (2.4 m long but 4 layers of 290 mm: NOT self-consistent, kept only for comparison)", "A": "A one EUR pallet (EXCLUDED by the clicks)", "C": "C length from clicks + truck geometry"}
     print("Median and ranges in m3, pooled over the 3 frames, width 0.8 m, truck scale\n")
     for c in "BAC":
         r = simulate(c, ALL); res[c] = {"load_only": q(r["V"].mean(0)), "load_plus_pallets": q(r["Vp"].mean(0)), "height_m": q(r["H"].mean(0)), "length_m": q(r["L"].mean(0)),
                                         "per_frame_median_load_only": [float(np.median(v)) for v in r["V"]]}
         print(f"{names[c]}\n   load only        {fmt(res[c]['load_only'])}\n   load + pallets   {fmt(res[c]['load_plus_pallets'])}")
         print(f"   height {res[c]['height_m']['median']:.2f} m | length {res[c]['length_m']['median']:.2f} m | per-frame medians (#1086, #1092, #1098): {[round(x, 2) for x in res[c]['per_frame_median_load_only']]}")
+    rb = scenario_B_from_crates(); res["B_crates"] = {"load_only": q(rb["V"]), "load_plus_pallets": q(rb["Vp"]), "height_m": q(rb["H"]), "length_m": q(rb["L"])}
+    print(f"SCENARIO B from crate count (L 2.4 m, H = 4 x 0.29-0.36 m, no image scale)\n   load only        {fmt(res['B_crates']['load_only'])}\n   load + pallets   {fmt(res['B_crates']['load_plus_pallets'])}")
     print("\nScenarios outside the main range (NOT mixed into it):")
-    scen = {}
+    scen = {"B_crates": {"width_1.2": q(scenario_B_from_crates(1.2)["V"])}}
+    print(f"  SCENARIO B (crate count): width 1.2 m -> {fmt(scen['B_crates']['width_1.2'])}")
     for c in "BAC":
         scen[c] = {"width_1.2": q(simulate(c, ALL, width=1.2)["V"].mean(0)), "pallet_height_scale": q(simulate(c, ALL, scale="pallet")["V"].mean(0))}
         print(f"  {c}: width 1.2 m -> {fmt(scen[c]['width_1.2'])} | height from pallet-height scale -> {fmt(scen[c]['pallet_height_scale'])}")
@@ -89,9 +101,10 @@ if __name__ == "__main__":
         s = sens[c]; ks = sorted(s, key=s.get); a.barh(ks, [s[k] for k in ks], color=["#444" if k == "all together" else "#3a7" for k in ks]); a.set_title(f"Case {c}: spread caused by one input alone"); a.set_xlabel("half of 80% range, % of median volume")
     plt.tight_layout(); plt.savefig("outputs/uncertainty_bars.png", dpi=130); plt.close()
     fig, a = plt.subplots(figsize=(8, 3.8))
-    for c, col in zip("ABC", ("#c63", "#37a", "#3a7")): a.hist(simulate(c, ALL)["V"].mean(0), bins=80, alpha=0.6, color=col, label=names[c])
+    for lab, v, col in (("A one EUR pallet (excluded)", simulate("A", ALL)["V"].mean(0), "#c63"), ("C: clicks + truck geometry", simulate("C", ALL)["V"].mean(0), "#3a7"), ("B: crate count (2.4 m)", scenario_B_from_crates()["V"], "#37a")):
+        a.hist(v, bins=80, alpha=0.6, color=col, label=lab)
     a.set_xlabel("load-only volume, m3 (width 0.8 m)"); a.set_ylabel("runs out of 10,000"); a.legend(); plt.tight_layout(); plt.savefig("outputs/volume_hist.png", dpi=130); plt.close()
-    fig, a = plt.subplots(figsize=(6, 3.4)); pf = simulate("B", ALL)["V"]
+    fig, a = plt.subplots(figsize=(6, 3.4)); pf = simulate("C", ALL)["V"]
     for i, (k, col) in enumerate(zip(("#1086", "#1092", "#1098"), ("#c63", "#37a", "#3a7"))): a.hist(pf[i], bins=60, alpha=0.5, color=col, label=k)
-    a.set_xlabel("case B load-only volume, m3"); a.legend(); plt.tight_layout(); plt.savefig("outputs/frames_spread.png", dpi=130); plt.close()
+    a.set_xlabel("case C load-only volume, m3, per frame"); a.legend(); plt.tight_layout(); plt.savefig("outputs/frames_spread.png", dpi=130); plt.close()
     print("\nsaved outputs/uncertainty.json, uncertainty_bars.png, volume_hist.png, frames_spread.png")
