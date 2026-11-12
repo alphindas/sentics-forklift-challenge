@@ -29,6 +29,14 @@ Load-only volume, 80 % range from the Monte Carlo (`outputs/uncertainty.json`). 
 | Load + pallets | 1.27 | 2.65 | 1.96 | 3.97 |
 | Width 1.2 m instead of 0.8 m | 1.70 | 3.55 | 2.62 | (already 1.2 m) |
 
+### New clicks: frames #1062 and #1068 (`src/new_frames.py`, `outputs/new_frames.json`)
+The right end of the load is cut off by the frame edge in both, so only the left-end height and a length lower bound can be measured. Frame #999 was skipped for the same reason.
+* **Height (truck scale, left end):** #1062 1.29 m, #1068 1.28 m (per layer 323 / 320 mm), against 1.24-1.25 m in #1086/#1092/#1098. All 5 frames: 1.24-1.29 m, mean 1.26 m (spread 4 %). The change is about +3 %, well under 10 %, so the Monte Carlo
+  numbers above are **not changed**; the per-layer height of 320-323 mm lies inside D's assumed 310-333 mm.
+* **Length:** in #1068 the top edge is at least 597 px long (clicked right end at x = 1903, at the frame edge), which is at least **1.96 m** at the left-end scale (±15 % for the unknown depth of the right end). So the load is **longer than about 1.9 m**.
+  This is a lower bound only: it leaves C (about 1.8 m, 1.47-2.06) very tight and does not separate B from D (both 2.4 m). D's length (3 x 0.8 m) comes from the counts and is unchanged.
+* The near-frontal frame did not give a ratio (right-end clicks missing), so the turn angle is still from #1086-#1098.
+
 ### Two kinds of uncertainty (do not mix them)
 **(a) Inside one scenario.** The Monte Carlo ranges above (for D: 3.38-3.74 m³, crates x volume 3.59-3.80) only cover click error, scale bias, fill factor, pallet tolerance, gap and focal length.
 They assume that the scenario itself is right. They are the *small* uncertainty.

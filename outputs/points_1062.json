@@ -1,0 +1,50 @@
+{
+ "A_01062.jpg": {
+  "pallet_BL": [
+   1390.5,
+   975.3
+  ],
+  "pallet_BR": null,
+  "pallet_TR": null,
+  "pallet_TL": [
+   1380.7,
+   931.7
+  ],
+  "load_BL": [
+   1374.9,
+   925.0
+  ],
+  "load_BR": null,
+  "load_TR": null,
+  "load_TL": [
+   1325.2,
+   525.1
+  ],
+  "face2_1": null,
+  "face2_2": null,
+  "face2_3": null,
+  "face2_4": null,
+  "ref_truck_rear": [
+   224.2,
+   734.2
+  ],
+  "ref_carriage_face": [
+   1372.2,
+   928.3
+  ],
+  "ref_mast_top": [
+   1110.1,
+   112.4
+  ],
+  "ref_front_wheel_ground": [
+   1168.7,
+   1012.6
+  ],
+  "load_end_right_ground": null,
+  "feet_leftmost": [
+   1389.3,
+   975.4
+  ],
+  "feet_rightmost": null
+ }
+}
