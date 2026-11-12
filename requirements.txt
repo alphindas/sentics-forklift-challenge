@@ -1,0 +1,9 @@
+numpy
+matplotlib
+opencv-python-headless
+pytest
+nbformat
+nbconvert
+ipykernel
+yt-dlp
+imageio-ffmpeg
