@@ -1,0 +1,7 @@
+{
+  "_note": "PROPOSED by Claude from looking at the frame. NOT VERIFIED. Pixel coords in the full 1920x1080 frame.",
+  "A_01092.jpg": {
+    "pallet_BL": [1372, 950], "pallet_BR": [1807, 880], "pallet_TR": [1795, 852], "pallet_TL": [1372, 910],
+    "load_BL": [1365, 910],   "load_BR": [1795, 850],   "load_TR": [1760, 562],   "load_TL": [1350, 582]
+  }
+}
