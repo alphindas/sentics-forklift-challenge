@@ -12,6 +12,7 @@ Hollow circles = PROPOSED points (not verified) shown only as a hint. They are n
 Running it twice on the same frame (--out run1 / run2) lets uncertainty.py measure click error.
 """
 import argparse, json, os
+import matplotlib; matplotlib.use("QtAgg")   # needs PyQt5 (no tkinter on this machine)
 import matplotlib.pyplot as plt, matplotlib.image as mpimg
 
 NAMES = [f"{g}_{c}" for g in ("pallet", "load") for c in ("BL", "BR", "TR", "TL")] + [f"face2_{i}" for i in range(1, 5)]

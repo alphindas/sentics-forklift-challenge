@@ -7,3 +7,4 @@ nbconvert
 ipykernel
 yt-dlp
 imageio-ffmpeg
+PyQt5
