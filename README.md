@@ -1,7 +1,15 @@
-# Forklift load volume from one video (work in progress)
+# Forklift load volume from one video
 
 **Problem.** In a public Linde video (https://www.youtube.com/watch?v=RCqa8Kojlw8, pass-by at about 20-22 s) a forklift drives past with a
-load of stacked crates on pallets. Estimate the load volume in m³ from the video alone. This is a prototype; it is not finished (tests, notebook, final review still open).
+load of stacked crates on pallets. Estimate the load volume in m³ from the video alone. This is a prototype.
+
+**Run it:** `pip install -r requirements.txt`, then open `notebook.ipynb` and run all cells (or `python src/measure.py`, `python src/uncertainty.py`, `python src/make_results.py`; tests: `python -m pytest tests -q`). Final numbers: `outputs/results.json`.
+
+## Result (short)
+* **Most likely scenario D (3 EUR pallets in a row, 2.4 x 1.2 m, 4 layers): about 3.6 m³ of load (80 % range 3.4-3.7 m³ inside D).** Load plus pallets about 4.0 m³.
+* **Across all scenarios that survive: about 1.8-3.7 m³**, depending on how many pallets are on the forks (C about 1.8, B about 2.4, D about 3.6; the 1.8 is C's median). A (1.14) is excluded.
+* **What decides it:** the number of pallets and the fork length (D needs a third pallet beyond 1200/1800 mm forks), plus the crate type. None of these is verified from the video alone.
+* The ranges inside a scenario are small (about 5 %); the choice of scenario is the big uncertainty (see "Two kinds of uncertainty").
 
 > **Status: no single final number.** Scenarios B, C and D are carried side by side, none is "main". The reason is two unverified facts:
 > **the crate type and the pallet layout in this video are NOT verified** (see Assumptions 1 and 2). Case A (one EUR pallet) is excluded.
@@ -103,5 +111,15 @@ The datasheet lists no fork longer than 1800 mm for the E80 but mentions "hook-o
 * Wasserhelden Artikelpass (0.75 L GDB crate, 9 per layer, 4 layers): https://produktinfo.blauer-engel.de/uploads/pdf_uploads/Artikelpass%20Wasserhelden_ohne%20Preise.pdf
 * Video: https://www.youtube.com/watch?v=RCqa8Kojlw8 (frames at 21.72 s, 21.84 s, 21.96 s)
 
+## Where this method would fail
+* **Load is not a box** (gaps, overhang, shrink-wrap, a half-empty top layer): the box volume is then too high; the fill factor 0.90-1.00 is a guess.
+* **Hidden or non-EUR pallet**, or a different pallet height than 144 mm: the pallet-height scale breaks (it is already the weak scale, about 30 px).
+* **Depth (load width) is a guess** (0.8 or 1.2 m, not visible from the side). This alone changes the volume by 50 %.
+* **Wrong number of pallets / crate type** (the main open point here): the volume scales with length.
+* **Steep or unknown camera angle, lens distortion:** one-camera perspective is simplified (pinhole, no distortion); a wide-angle lens bends the edges. Focal length is only bounded (800-1400 px).
+* **Truck scale at different depths** (mast vs. load): up to about 10 % assumed; it was 40 % off for the length in one frame.
+* **Motion blur and cut-off frames:** click error 2-10 px; the right end of the load was out of frame in several frames.
+* **Next steps:** a second camera or a depth sensor (gives width and true length directly), a frame with the pallets and fork tips visible, a known reference object in the load plane, a crate datasheet from the plant.
+
 ## Still open
-Click frames #999, #1014 and the near-frontal candidates #1062 / #1068 (all in `frames/`) to replace the proposed points; tests (Step 5), notebook and `results.json` (Step 6), "Where this would fail" list, pitch script, final self-review.
+Frames #999 and #1014 were not clicked (the right end is cut off), so the #999 points in `src/early_frames.py` stay Claude's eyeballed, **unverified** readings. Crate type, number of pallets and fork length of the pass-by truck are not verified (the plant could not be asked).

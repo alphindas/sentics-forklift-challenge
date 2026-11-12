@@ -1,0 +1,68 @@
+{
+ "note": "No single answer: scenario (number of pallets) is NOT verified. Volumes in m3, load only, 80 % range (p10-p90) INSIDE each scenario.",
+ "scenarios_load_only_m3": {
+  "B two pallets, height from image": {
+   "median": 2.29,
+   "p10": 2.09,
+   "p90": 2.5
+  },
+  "A one EUR pallet (excluded)": {
+   "median": 1.14,
+   "p10": 1.04,
+   "p90": 1.24
+  },
+  "C length from clicks": {
+   "median": 1.75,
+   "p10": 1.47,
+   "p90": 2.06
+  },
+  "B two pallets, height from crates": {
+   "median": 2.37,
+   "p10": 2.15,
+   "p90": 2.59
+  },
+  "D three pallets 2.4 x 1.2 m": {
+   "median": 3.56,
+   "p10": 3.38,
+   "p90": 3.74
+  }
+ },
+ "per_frame_height_m_truck_scale": {
+  "1086": 1.249,
+  "1092": 1.252,
+  "1098": 1.239,
+  "1062": 1.293,
+  "1068": 1.282
+ },
+ "per_frame_height_m_pallet_scale": {
+  "1086": 1.496,
+  "1092": 1.434,
+  "1098": 1.493
+ },
+ "length_lower_bound_m_frame_1068": 1.96,
+ "monte_carlo_runs": 10000,
+ "ranges_assumed": {
+  "scale_bias": [
+   -0.1,
+   0.1
+  ],
+  "fill": [
+   0.9,
+   1.0
+  ],
+  "focal_px": [
+   800,
+   1400
+  ],
+  "gap_m": [
+   0.0,
+   0.03
+  ],
+  "tol_m": 0.003
+ },
+ "overall_range_m3_across_scenarios": [
+  1.8,
+  3.7
+ ],
+ "most_likely_scenario": "D (3 pallets, 2.4 x 1.2 m), unverified"
+}
