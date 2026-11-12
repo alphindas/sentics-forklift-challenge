@@ -24,10 +24,19 @@ Load-only volume, 80 % range from the Monte Carlo (`outputs/uncertainty.json`). 
 | | A: 1 EUR pallet | B: 2 pallets in a row (8 crates x 300 mm) | C: length from clicks | D: 3 pallets, 800 mm side along the forks |
 |---|---|---|---|---|
 | Length x width | 1.2 x 0.8 m | 2.4 x 0.8 m | about 1.8 x 0.8 m | 2.4 x 1.2 m |
-| Height | 1.25 m (image) | 4 x 0.29-0.36 m | 1.25 m (image) | 4 x 0.310-0.333 m (12 x 0.75 L crate 400x266) |
+| Height | 1.25 m (image) | 4 x 0.29-0.36 m | 1.25 m (image) | 4 x 0.310-0.333 m (**assumption**, see below: catalogue range of a 12 x 0.75 L crate 400x266, not measured on this crate) |
 | Load only | 1.14 (1.04-1.24) | 2.37 (2.15-2.59) | 1.75 (1.47-2.06) | **3.56 (3.38-3.74)**; crates x crate volume (108 crates): 3.70 (3.59-3.80) |
 | Load + pallets | 1.27 | 2.65 | 1.96 | 3.97 |
 | Width 1.2 m instead of 0.8 m | 1.70 | 3.55 | 2.62 | (already 1.2 m) |
+
+### Two kinds of uncertainty (do not mix them)
+**(a) Inside one scenario.** The Monte Carlo ranges above (for D: 3.38-3.74 m³, crates x volume 3.59-3.80) only cover click error, scale bias, fill factor, pallet tolerance, gap and focal length.
+They assume that the scenario itself is right. They are the *small* uncertainty.
+
+**(b) Which scenario is right.** This is the *large* one and the Monte Carlo does not cover it: the load-only medians run from 1.75 (C) over 2.37 (B) to 3.56 m³ (D), a factor of about 2 between the ends,
+and A (1.14) is excluded. It depends on facts that are not verified: the crate type, how many pallets are on the forks, and the load depth (0.8 or 1.2 m). Today the evidence favours D, but D still has an open problem
+(the fork tips, see the consistency table). "They carry several pallets together" is **likely** (blue-load seam, 5-tine carriage at 52 s, see Assumption 14) but **unverified**; Carolinen could not be asked.
+So D's range must not be quoted as the whole uncertainty. The honest statement today is "about 1.8-3.7 m³ depending on the scenario, D most likely, and within D 3.4-3.7 m³".
 
 ### Consistency table (what each scenario has to explain)
 Facts read from the frames: **9 crate columns on every row** (frame #999, where the left end is visible), **4 layers**, **3 white labels, one per 3 columns** (spacing 3.1, 3.3, 3.0 columns in #999; 3.2 in #1008; 3.0 in #1092),
@@ -72,6 +81,10 @@ The datasheet lists no fork longer than 1800 mm for the E80 but mentions "hook-o
 10. Frame #1098: the "truck rear" click is a different feature than in the other frames; it is not used for volumes.
 11. Frames #1086-#1098 are only 0.1-0.24 s apart; their errors are correlated. Frame #999 (19.98 s) shows the whole face from the other side of the turn; its corner points were **read by eye by Claude and are not verified** (`src/early_frames.py`).
 12. Extra frames used (not stored in the repo, see timestamps): green-crate close-up 16.0-17.5 s; blue-crate loads 115.4 s, 117.1 s, 138.5-139.6 s, 140-142 s; early pass 19.7-20.3 s. In the close-up the bottle labels read "Carolinen naturelle".
+14. **Empty forks found (video 51-52 s, frames 02575-02625 in `extra_pics/`):** a Linde truck of the same family with a very wide carriage and **5 fork tines** (so a multi-pallet fork is in use at this plant).
+   It is an oblique view and probably a different truck, so it does not prove the pass-by truck has the same forks. Fork length cannot be read from this shot: the tines point partly towards the camera, and with the unknown turn
+   angle the image gives only the relation length = 1.4 m / tan(angle between the forks and the camera direction), from about 290 px of sideways tine extent against about 445 px of carriage width (2180 mm datasheet). No second view with a visible fork tip at the far end of the pass-by load was found.
+15. **Crate height 310-333 mm in D comes from a catalogue range** (Delbrouck, 12 x 0.75 L, 400 x 266 x 310-333, URL in Sources). It is the height range of products that exist, **not verified for the crate in this video**. The measured load height (1.24-1.33 m, truck scale) is consistent with 4 layers of that range, but that is a consistency check, not a source.
 13. Blue-crate loads (Carolinen crates, 5 layers) show a seam in the middle of the pallet and 3 crates per pallet along a face, with 6 crates across in the front view. This suggests the plant carries several pallets together, but it does not fix the crate size.
 
 ## Sources
@@ -83,4 +96,4 @@ The datasheet lists no fork longer than 1800 mm for the E80 but mentions "hook-o
 * Video: https://www.youtube.com/watch?v=RCqa8Kojlw8 (frames at 21.72 s, 21.84 s, 21.96 s)
 
 ## Still open
-Click frame #999 (and one more early frame) to replace the proposed points; tests (Step 5), notebook and `results.json` (Step 6), "Where this would fail" list, pitch script, final self-review.
+Click frames #999, #1014 and the near-frontal candidates #1062 / #1068 (all in `frames/`) to replace the proposed points; tests (Step 5), notebook and `results.json` (Step 6), "Where this would fail" list, pitch script, final self-review.
