@@ -6,6 +6,11 @@ Order of clicks (the title bar always tells you the next one):
   pallet_BL pallet_BR pallet_TR pallet_TL   (front face of the pallet, B=bottom T=top)
   load_BL   load_BR   load_TR   load_TL     (front face of the load)
   face2_1 .. face2_4                        (second face, optional: press K to skip)
+  ref_truck_rear        rearmost point of the truck body (datasheet: rear -> fork face = 3503 mm)
+  ref_carriage_face     front face of the fork carriage, at the ground end of the vertical plate
+  ref_mast_top          top of the mast (datasheet: ground -> mast top = 2888 mm)
+  ref_front_wheel_ground  where the front (drive) wheel touches the floor, below the mast
+  load_end_right_ground right end of the pallet at floor level;  feet_leftmost / feet_rightmost: outer edges of the first/last pallet foot you can see
 Keys:  u = undo last point   k = skip face 2   s = save   q = save and quit
 Mouse: left click = place point,  scroll wheel = zoom at cursor,  right-drag = pan
 Hollow circles = PROPOSED points (not verified) shown only as a hint. They are never saved.
@@ -15,7 +20,8 @@ import argparse, json, os
 import matplotlib; matplotlib.use("QtAgg")   # needs PyQt5 (no tkinter on this machine)
 import matplotlib.pyplot as plt, matplotlib.image as mpimg
 
-NAMES = [f"{g}_{c}" for g in ("pallet", "load") for c in ("BL", "BR", "TR", "TL")] + [f"face2_{i}" for i in range(1, 5)]
+NAMES = [f"{g}_{c}" for g in ("pallet", "load") for c in ("BL", "BR", "TR", "TL")] + [f"face2_{i}" for i in range(1, 5)] \
+    + ["ref_truck_rear", "ref_carriage_face", "ref_mast_top", "ref_front_wheel_ground", "load_end_right_ground", "feet_leftmost", "feet_rightmost"]
 
 ap = argparse.ArgumentParser(); ap.add_argument("frame"); ap.add_argument("--out", default="outputs/points.json"); ap.add_argument("--proposed")
 a = ap.parse_args(); key = os.path.basename(a.frame)
