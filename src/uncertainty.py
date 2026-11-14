@@ -1,4 +1,4 @@
-"""Step 4: Monte Carlo (10,000 runs) for the load volume. Two scenarios side by side, neither is "main": C (length from clicks + truck geometry) and B (length from the crate count, height from crate heights). A (one EUR pallet) is excluded by the clicks.
+"""Step 4: Monte Carlo (10,000 runs) for the load volume. D (3 pallets, from the crate counts) is the most likely scenario, but it is not proven; B (length from the crate count, height from crate heights) and C (length from clicks + truck geometry) are kept for comparison. A (one EUR pallet) is excluded by the clicks.
 Plain idea: every input that we are not sure about gets a range; each run draws one value for each, computes the volume, and we
 look at the spread of the 10,000 results. All ranges are ASSUMPTIONS written in README.md. Nothing here decides which case is true.
 Clicks vary independently per frame; the other inputs (scale bias, lens, fill, tolerances) are shared by the three frames, because

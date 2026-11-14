@@ -1,7 +1,7 @@
 """Draw the crate counts on frame #999 (outputs/A_00999_counts.jpg).
 
 Counts were made by eye on the zoomed frame: 9 columns (top and bottom row), 4 layers,
-3 labels (columns 1-2, 4, 7), double pallet feet between columns 3/4 and 6/7.
+3 labels about 3 columns apart, double pallet feet between columns 3/4 and 6/7.
 Marker positions are approximate pixel positions, placed by eye; they illustrate the
 count and are not measurements.
 """
@@ -46,7 +46,7 @@ def main():
         d.ellipse((x - 45, y - 28, x + 45, y + 28), outline="orange", width=5)
 
     legend = ["#999: 9 columns (yellow top row, cyan bottom row), 4 layers (L1-L4)",
-              "magenta = 3 labels (columns 1-2, 4, 7); orange = double feet where pallets meet (3/4, 6/7)",
+              "magenta = 3 labels, about 3 columns apart; orange = double feet where pallets meet (3/4, 6/7)",
               "markers placed by eye; right end of lower rows and pallet at frame edge"]
     for k, line in enumerate(legend):
         tag((960, 1000 + k * 30), line, "white", fs)
