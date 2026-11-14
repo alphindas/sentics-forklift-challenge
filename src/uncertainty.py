@@ -112,9 +112,9 @@ if __name__ == "__main__":
         s = sens[c]; ks = sorted(s, key=s.get); a.barh(ks, [s[k] for k in ks], color=["#444" if k == "all together" else "#3a7" for k in ks]); a.set_title(f"Case {c}: spread caused by one input alone"); a.set_xlabel("half of 80% range, % of median volume")
     plt.tight_layout(); plt.savefig("outputs/uncertainty_bars.png", dpi=130); plt.close()
     fig, a = plt.subplots(figsize=(8, 3.8))
-    for lab, v, col in (("A one EUR pallet (excluded)", simulate("A", ALL)["V"].mean(0), "#c63"), ("C: clicks + truck geometry", simulate("C", ALL)["V"].mean(0), "#3a7"), ("B: crate count (2.4 m x 0.8 m)", scenario_B_from_crates()["V"], "#37a"), ("D: 3 pallets (2.4 m x 1.2 m)", scenario_D()["V"], "#a37")):
+    for lab, v, col in (("A one EUR pallet (excluded)", simulate("A", ALL)["V"].mean(0), "#c63"), ("C: clicks + truck geometry", simulate("C", ALL)["V"].mean(0), "#3a7"), ("B: 2 pallets in a row, 8 x 300 mm crates (2.4 m x 0.8 m)", scenario_B_from_crates()["V"], "#37a"), ("D: 3 pallets (2.4 m x 1.2 m)", scenario_D()["V"], "#a37")):
         a.hist(v, bins=80, alpha=0.6, color=col, label=lab)
-    a.set_xlabel("load-only volume, m3 (width 0.8 m)"); a.set_ylabel("runs out of 10,000"); a.legend(); plt.tight_layout(); plt.savefig("outputs/volume_hist.png", dpi=130); plt.close()
+    a.set_xlabel("load-only volume, m3 (width 0.8 m for A, B, C; 1.2 m for D)"); a.set_ylabel("runs out of 10,000"); a.set_ylim(0, a.get_ylim()[1] * 1.35); a.legend(loc="upper center", ncol=2, fontsize=8); plt.tight_layout(); plt.savefig("outputs/volume_hist.png", dpi=130); plt.close()
     fig, a = plt.subplots(figsize=(6, 3.4)); pf = simulate("C", ALL)["V"]
     for i, (k, col) in enumerate(zip(("#1086", "#1092", "#1098"), ("#c63", "#37a", "#3a7"))): a.hist(pf[i], bins=60, alpha=0.5, color=col, label=k)
     a.set_xlabel("case C load-only volume, m3, per frame"); a.legend(); plt.tight_layout(); plt.savefig("outputs/frames_spread.png", dpi=130); plt.close()

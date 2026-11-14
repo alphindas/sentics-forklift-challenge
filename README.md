@@ -7,11 +7,11 @@ load of stacked crates on pallets. Estimate the load volume in m³ from the vide
 
 ## Result (short)
 * **Most likely scenario D (3 EUR pallets in a row, 2.4 x 1.2 m, 4 layers): about 3.6 m³ of load (80 % range 3.4-3.7 m³ inside D).** Load plus pallets about 4.0 m³.
-* **Across all scenarios that survive: about 1.8-3.7 m³**, depending on how many pallets are on the forks (C about 1.8, B about 2.4, D about 3.6; the 1.8 is C's median). A (1.14) is excluded.
+* **If 3 pallets: 3.4-3.7 m³. If something else, it could be lower, but B and C don't fit the crate counts well either, so I don't have a clean lower number I trust.** A (1.14) is excluded.
 * **What decides it:** the number of pallets and the fork length (D needs a third pallet beyond 1200/1800 mm forks), plus the crate type. None of these is verified from the video alone.
 * The ranges inside a scenario are small (about 5 %); the choice of scenario is the big uncertainty (see "Two kinds of uncertainty").
 
-> **Status: no single final number.** Scenarios B, C and D are carried side by side, none is "main". The reason is two unverified facts:
+> **Status: D is the most likely scenario, but it is not proven.** B and C are kept in the tables for comparison. The reason D is not proven is two unverified facts:
 > **the crate type and the pallet layout in this video are NOT verified** (see Assumptions 1 and 2). Case A (one EUR pallet) is excluded.
 
 ## Method in plain steps
@@ -25,7 +25,7 @@ load of stacked crates on pallets. Estimate the load volume in m³ from the vide
 5. Crate checks: count layers and crates, compare with real crate sizes (`src/crates.py`).
 6. Monte Carlo, 10,000 runs, inputs: click error, scale bias, fill factor, pallet tolerance, focal length (`src/uncertainty.py`).
 
-## Scenarios (width and crate type are not certain; none is chosen)
+## Scenarios (width and crate type are not certain; D is the most likely)
 Load-only volume, 80 % range from the Monte Carlo (`outputs/uncertainty.json`). Frames #1086/#1092/#1098 (clicked), pooled. Heights now use the **left-end** height with the truck scale
 (1.25 m = 4 layers x 312 mm); an earlier version used the mean height and understated it by about 8 %.
 
@@ -52,10 +52,10 @@ They assume that the scenario itself is right. They are the *small* uncertainty.
 **(b) Which scenario is right.** This is the *large* one and the Monte Carlo does not cover it: the load-only medians run from 1.75 (C) over 2.37 (B) to 3.56 m³ (D), a factor of about 2 between the ends,
 and A (1.14) is excluded. It depends on facts that are not verified: the crate type, how many pallets are on the forks, and the load depth (0.8 or 1.2 m). Today the evidence favours D, but D still has an open problem
 (the fork tips, see the consistency table). "They carry several pallets together" is **likely** (blue-load seam, 5-tine carriage at 52 s, see Assumption 14) but **unverified**; Carolinen could not be asked.
-So D's range must not be quoted as the whole uncertainty. The honest statement today is "about 1.8-3.7 m³ depending on the scenario, D most likely, and within D 3.4-3.7 m³".
+So D's range must not be quoted as the whole uncertainty. The honest statement today is: "If 3 pallets: 3.4-3.7 m³. If something else, it could be lower, but B and C don't fit the crate counts well either, so I don't have a clean lower number I trust."
 
 ### Consistency table (what each scenario has to explain)
-Facts read from the frames: **9 crate columns on every row** (frame #999, where the left end is visible), **4 layers**, **3 white labels, one per 3 columns** (spacing 3.1, 3.3, 3.0 columns in #999; 3.2 in #1008; 3.0 in #1092),
+Facts read from the frames: **9 crate columns on every row** (frame #999, where the left end and the top row's right end are visible; annotated in `outputs/A_00999_counts.jpg`), **4 layers**, **3 white labels, one per 3 columns** (spacing 3.1, 3.3, 3.0 columns in #999; 3.2 in #1008; 3.0 in #1092),
 **about 9 pallet feet** in 3 groups of 3 (8 clearly seen in #999 plus one at the frame edge; two pairs of feet side by side where two pallets would meet).
 
 | Test | A | B | C | D |
@@ -65,14 +65,14 @@ Facts read from the frames: **9 crate columns on every row** (frame #999, where 
 | Height 1.25-1.5 m measured (4 layers = 310-375 mm per layer) | ok | ok | ok | **yes** (1.24-1.33 m) |
 | Crate cell width/height measured 0.81-0.91 (apparent, from window pitch) | - | 300 x 290 needs a 24-37 deg turn (turn estimate 12-27 deg): borderline | borderline | 266 x 310-333 predicts 0.82-0.88: **fits** (needs a nearly frontal face) |
 | Fork tips (datasheet 1200 or 1800 mm) | fits | 2.4 m deep: overhangs 1.2 / 0.6 m | 1.8 m fits 1800 mm forks | same as B: pallet 3 hangs 1.2 m (1200 mm forks) or 0.6 m (1800 mm forks) beyond the tips |
-| Verified crate for the count | - | 300 mm side: 20 x 0.5 L only | no crate with a 200 mm side along 9 columns in 1.8 m (9 x 0.2) | 12 x 0.75 L crate 400 x 266 exists (Delbrouck), 9 per layer and 4 layers as in the Wasserhelden pallet data |
+| A real crate of this size exists (catalogue), but it is not confirmed to be the crate in this video. | - | 300 mm side: 20 x 0.5 L only | no crate with a 200 mm side along 9 columns in 1.8 m (9 x 0.2) | 12 x 0.75 L crate 400 x 266 exists (Delbrouck), 9 per layer and 4 layers as in the Wasserhelden pallet data |
 
 **What survives.** A is excluded (counts and length). B as defined does not survive the counts (it needs 8 columns, not 9). C survives only on one frame's truck scale and conflicts with the counts, with frame #999, and with
 a plain 266/300 crate. D survives the counts, the length (on 3 of 4 estimates), the height and the crate type, but it has to explain why the third pallet hangs over the fork tips, and it differs by 20-25 % from the #1092 truck-scale length.
-The datasheet lists no fork longer than 1800 mm for the E80 but mentions "hook-on and integrated attachments" without sizes, so a longer reach is possible but unverified. No scenario is selected here.
+The datasheet lists no fork longer than 1800 mm for the E80 but mentions "hook-on and integrated attachments" without sizes, so a longer reach is possible but unverified. D is the most likely scenario.
 
 * **Same load, two views.** In #999 the right end is nearer (edge height ratio 0.80); in #1092 the left end is nearer (1.17). The truck swings during the pass. With the pallet-height scale the two frames give 2.45-2.56 m and 2.05-2.20 m
-  (12 % apart); with the truck scale 2.60-2.72 m and 1.79-1.92 m (about 40 % apart). So the truck scale at #1092 is the least reliable number. #999 values come from points **read by eye by Claude, not clicked by you**.
+  (12 % apart); with the truck scale 2.60-2.72 m and 1.79-1.92 m (about 40 % apart). So the truck scale at #1092 is the least reliable number. #999 values come from points **estimated by eye, not clicked**.
 * Case A is excluded: the pallet long edge is about 14 times its height in the image (a 1200 x 144 mm face would be 8.3).
 
 ## Where the crate type came from (and did not)
@@ -93,9 +93,9 @@ The datasheet lists no fork longer than 1800 mm for the E80 but mentions "hook-o
 6. Camera: ideal pinhole, image centre as principal point, no lens distortion; focal length 800-1400 px (upper limit from the truck geometry, lower limit a wide-angle guess).
 7. The long face is a flat rectangle with equal vertical edges (the height ratio left/right comes from perspective only).
 8. Fill factor 0.90-1.00 (share of the bounding box that is filled). Click error: 2-5 px for sharp points, 10 px for blurry points.
-9. Crate count: 4 layers (counted by two people, re-checked on a close crop), 8 crates along the lower rows (9 in the top row, left end hidden by the fork carriage).
+9. Crate count: 4 layers (counted by two people, re-checked on a close crop). 9 columns, counted in #999: the top row shows both ends (right end at the frame edge for the lower rows and pallet). In #1086-#1098 only 8 are visible because the left column is behind the fork carriage. Annotated counts: `outputs/A_00999_counts.jpg` (`src/annotate_counts.py`).
 10. Frame #1098: the "truck rear" click is a different feature than in the other frames; it is not used for volumes.
-11. Frames #1086-#1098 are only 0.1-0.24 s apart; their errors are correlated. Frame #999 (19.98 s) shows the whole face from the other side of the turn; its corner points were **read by eye by Claude and are not verified** (`src/early_frames.py`).
+11. Frames #1086-#1098 are only 0.1-0.24 s apart; their errors are correlated. Frame #999 (19.98 s) shows the whole face from the other side of the turn; its corner points were **estimated by eye, not clicked**, and are not verified (`src/early_frames.py`).
 12. Extra frames used (not stored in the repo, see timestamps): green-crate close-up 16.0-17.5 s; blue-crate loads 115.4 s, 117.1 s, 138.5-139.6 s, 140-142 s; early pass 19.7-20.3 s. In the close-up the bottle labels read "Carolinen naturelle".
 14. **Empty forks found (video 51-52 s, frames 02575-02625 in `extra_pics/`):** a Linde truck of the same family with a very wide carriage and **5 fork tines** (so a multi-pallet fork is in use at this plant).
    It is an oblique view and probably a different truck, so it does not prove the pass-by truck has the same forks. Fork length cannot be read from this shot: the tines point partly towards the camera, and with the unknown turn
@@ -122,4 +122,4 @@ The datasheet lists no fork longer than 1800 mm for the E80 but mentions "hook-o
 * **Next steps:** a second camera or a depth sensor (gives width and true length directly), a frame with the pallets and fork tips visible, a known reference object in the load plane, a crate datasheet from the plant.
 
 ## Still open
-Frames #999 and #1014 were not clicked (the right end is cut off), so the #999 points in `src/early_frames.py` stay Claude's eyeballed, **unverified** readings. Crate type, number of pallets and fork length of the pass-by truck are not verified (the plant could not be asked).
+Frames #999 and #1014 were not clicked (the right end is cut off), so the #999 points in `src/early_frames.py` stay **estimated by eye, not clicked**, and unverified. Crate type, number of pallets and fork length of the pass-by truck are not verified (the plant could not be asked).
