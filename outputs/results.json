@@ -13,7 +13,7 @@
   },
   "C length from clicks": {
    "median": 2.2,
-   "p10": 1.85,
+   "p10": 1.84,
    "p90": 2.59
   },
   "B two pallets, height from crates": {
@@ -21,10 +21,10 @@
    "p10": 2.15,
    "p90": 2.59
   },
-  "D three pallets 2.4 x 1.2 m": {
-   "median": 3.56,
-   "p10": 3.38,
-   "p90": 3.74
+  "D three pallets 2.4 x 1.2 m, measured height": {
+   "median": 3.87,
+   "p10": 3.53,
+   "p90": 4.23
   }
  },
  "per_frame_height_m_truck_scale": {
