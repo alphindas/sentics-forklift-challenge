@@ -63,12 +63,12 @@ Facts read from the frames: **9 crate columns on every row** (frame #999, where 
 | 9 columns, 3 labels, 9 feet | no | no (expects 8 columns, 2 labels, 6 feet) | not tested | **yes** |
 | Length vs measured (#999: 2.45-2.72 m, proposed points; #1092: 2.05-2.20 pallet scale, 1.79-1.92 truck scale) | no (1.2 m) | yes for #999 and pallet scale, 25 % long for #1092 truck scale | yes for #1092 truck scale, 30 % short for #999 | same as B |
 | Height 1.25-1.5 m measured (4 layers = 310-375 mm per layer) | ok | ok | ok | **yes** (1.24-1.33 m) |
-| Crate cell width/height measured 0.81-0.91 (apparent, from window pitch) | - | 300 x 290 needs a 24-37 deg turn (turn estimate 12-27 deg): borderline | borderline | 266 x 310-333 predicts 0.82-0.88: **fits** (needs a nearly frontal face) |
+| Crate cell width/height measured 0.81-0.91 (apparent, from window pitch) | - | 300 x 290 needs a 24-37 deg turn (turn estimate 22-25 deg): borderline | borderline | 266 x 310-333 predicts 0.82-0.88: borderline at 22-25 deg (fits only if the face is nearly frontal) |
 | Fork tips (datasheet 1200 or 1800 mm) | fits | 2.4 m deep: overhangs 1.2 / 0.6 m | 1.8 m fits 1800 mm forks | same as B: pallet 3 hangs 1.2 m (1200 mm forks) or 0.6 m (1800 mm forks) beyond the tips |
 | A real crate of this size exists (catalogue), but it is not confirmed to be the crate in this video. | - | 300 mm side: 20 x 0.5 L only | no crate with a 200 mm side along 9 columns in 1.8 m (9 x 0.2) | 12 x 0.75 L crate 400 x 266 exists (Delbrouck), 9 per layer and 4 layers as in the Wasserhelden pallet data |
 
 **What survives.** A is excluded (counts and length). B as defined does not survive the counts (it needs 8 columns, not 9). C survives only on one frame's truck scale and conflicts with the counts, with frame #999, and with
-a plain 266/300 crate. D survives the counts, the length (on 3 of 4 estimates), the height and the crate type, but it has to explain why the third pallet hangs over the fork tips, and it differs by 20-25 % from the #1092 truck-scale length.
+a plain 266/300 crate. D fits the counts and the height. Length: supported by #999 (points estimated by eye) and the pallet scale (still 8-15 % short), contradicted by the #1092 truck scale; the #1068 lower bound (>= 1.96 m) is consistent with D. A real crate of the right size exists, but it is not verified for this video. D has to explain why the third pallet hangs over the fork tips, and it differs by 20-25 % from the #1092 truck-scale length.
 The datasheet lists no fork longer than 1800 mm for the E80 but mentions "hook-on and integrated attachments" without sizes, so a longer reach is possible but unverified. D is the most likely scenario.
 
 * **Same load, two views.** In #999 the right end is nearer (edge height ratio 0.80); in #1092 the left end is nearer (1.17). The truck swings during the pass. With the pallet-height scale the two frames give 2.45-2.56 m and 2.05-2.20 m
@@ -86,7 +86,7 @@ The datasheet lists no fork longer than 1800 mm for the E80 but mentions "hook-o
 ## Assumptions (every one of these is a guess or an unverified fact)
 1. **Crate type is NOT verified for this video.** Heights of 0.29-0.36 m are the range of real 20 x 0.5 L and 12-bottle crates (sources below), not a match for the video's crate.
 2. The pallets are EUR pallets (1200 x 800 x 144 mm). No EPAL mark or block count could be confirmed. +-3 mm per pallet and a 0-30 mm gap between two pallets are assumed.
-3. Load width (depth into the picture) is 0.8 m (alt. 1.2 m). Not visible in this view.
+3. Load width 0.8 m for A, B, C; 1.2 m for D (follows from 3 pallets turned with the 800 mm side along the forks). Not visible in the video.
 4. Forklift model "Linde E80" comes from the video's own title card. Datasheet: Linde E60/E80, series 1279 (4.2 mast height lowered 2888 mm; 4.20 length to fork face 3503 mm; 4.22 forks 1200 mm for the
    600 mm load-centre version, 1800 mm for the 900 mm version; 4.24 carriage width 2180 mm). Which variant is in the video is **not known**. Fork spacing is not in the datasheet.
 5. Truck scale error from different depths (mast vs. wheel): +-10 % (assumed). The pallet-height scale disagrees by 22-27 %, outside this band, so that gap is carried as the two scenarios.
@@ -95,13 +95,13 @@ The datasheet lists no fork longer than 1800 mm for the E80 but mentions "hook-o
 8. Fill factor 0.90-1.00 (share of the bounding box that is filled). Click error: 2-5 px for sharp points, 10 px for blurry points.
 9. Crate count: 4 layers (counted by two people, re-checked on a close crop). 9 columns, counted in #999: the top row shows both ends (right end at the frame edge for the lower rows and pallet). In #1086-#1098 only 8 are visible because the left column is behind the fork carriage. Annotated counts: `outputs/A_00999_counts.jpg` (`src/annotate_counts.py`).
 10. Frame #1098: the "truck rear" click is a different feature than in the other frames; it is not used for volumes.
-11. Frames #1086-#1098 are only 0.1-0.24 s apart; their errors are correlated. Frame #999 (19.98 s) shows the whole face from the other side of the turn; its corner points were **estimated by eye, not clicked**, and are not verified (`src/early_frames.py`).
+11. Frames #1086-#1098 are only 0.1-0.24 s apart; their errors are correlated. Frame #999 (19.98 s) shows nearly the whole face (lower right at the frame edge) from the other side of the turn; its corner points were **estimated by eye, not clicked**, and are not verified (`src/early_frames.py`).
 12. Extra frames used (not stored in the repo, see timestamps): green-crate close-up 16.0-17.5 s; blue-crate loads 115.4 s, 117.1 s, 138.5-139.6 s, 140-142 s; early pass 19.7-20.3 s. In the close-up the bottle labels read "Carolinen naturelle".
+13. Blue-crate loads (Carolinen crates, 5 layers) show a seam in the middle of the pallet and 3 crates per pallet along a face, with 6 crates across in the front view. This suggests the plant carries several pallets together, but it does not fix the crate size.
 14. **Empty forks found (video 51-52 s, frames 02575-02625 in `extra_pics/`):** a Linde truck of the same family with a very wide carriage and **5 fork tines** (so a multi-pallet fork is in use at this plant).
    It is an oblique view and probably a different truck, so it does not prove the pass-by truck has the same forks. Fork length cannot be read from this shot: the tines point partly towards the camera, and with the unknown turn
    angle the image gives only the relation length = 1.4 m / tan(angle between the forks and the camera direction), from about 290 px of sideways tine extent against about 445 px of carriage width (2180 mm datasheet). No second view with a visible fork tip at the far end of the pass-by load was found.
 15. **Crate height 310-333 mm in D comes from a catalogue range** (Delbrouck, 12 x 0.75 L, 400 x 266 x 310-333, URL in Sources). It is the height range of products that exist, **not verified for the crate in this video**. The measured load height (1.24-1.33 m, truck scale) is consistent with 4 layers of that range, but that is a consistency check, not a source.
-13. Blue-crate loads (Carolinen crates, 5 layers) show a seam in the middle of the pallet and 3 crates per pallet along a face, with 6 crates across in the front view. This suggests the plant carries several pallets together, but it does not fix the crate size.
 
 ## Sources
 * Linde E60/E80 datasheet (series 1279): https://www.linde-mh.com/media/Datasheets/EN_ds_e60_e80_1279_en_b_0224_view.pdf
@@ -109,7 +109,7 @@ The datasheet lists no fork longer than 1800 mm for the E80 but mentions "hook-o
 * Delbrouck crate catalogue: https://www.delbrouck.de/en/getraenkekaesten/
 * Paderborner datasheets (20 x 0.5 L crate 40x30x30 cm, 8 per layer, 5 layers, 161 cm with pallet): https://paderborner-brauerei.de/wp-content/uploads/2025/08/2025_08_26_PB-Export_Datenblatt_20x05l_web.pdf , https://paderborner-brauerei.de/wp-content/uploads/2024/02/PB_Limo_Cola-Orange_DB_Fl_05lx20.pdf
 * Wasserhelden Artikelpass (0.75 L GDB crate, 9 per layer, 4 layers): https://produktinfo.blauer-engel.de/uploads/pdf_uploads/Artikelpass%20Wasserhelden_ohne%20Preise.pdf
-* Video: https://www.youtube.com/watch?v=RCqa8Kojlw8 (frames at 21.72 s, 21.84 s, 21.96 s)
+* Video: https://www.youtube.com/watch?v=RCqa8Kojlw8 (frames at 21.72 s, 21.84 s, 21.96 s; frame #999 at 19.98 s)
 
 ## Where this method would fail
 * **Load is not a box** (gaps, overhang, shrink-wrap, a half-empty top layer): the box volume is then too high; the fill factor 0.90-1.00 is a guess.
