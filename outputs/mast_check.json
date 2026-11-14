@@ -1,0 +1,163 @@
+{
+ "frames": {
+  "A_01086.jpg": {
+   "mast_px": 793.8,
+   "roof_px": 753.6999999999999,
+   "front_tyre_px": 207.86526886423331,
+   "rear_tyre_px": 241.0756105457372,
+   "ratio_mast_roof_raw": 1.0532041926495954,
+   "ratio_mast_front_tyre_raw": 3.8188197784905973,
+   "ratio_front_rear_tyre": 0.8622409724222054,
+   "ratio_mast_roof_corr": 1.127612282447096,
+   "mast_mm_tyre_scale": 3164.1964888063094,
+   "roof_mm_tyre_scale": 2806.103248484936,
+   "roof_check": 0.9887608345612883,
+   "ratio_corr_p10_p90": [
+    1.1063082318992157,
+    1.1501418778618253
+   ],
+   "mast_mm_p10_p90": [
+    3073.2187208445152,
+    3254.243594117863
+   ],
+   "best_mast_by_ratio": 3213,
+   "best_mast_by_tyre_scale": 3213
+  },
+  "A_01092.jpg": {
+   "mast_px": 765.0999999999999,
+   "roof_px": 723.2,
+   "front_tyre_px": 198.13200145357644,
+   "rear_tyre_px": 233.29350612479539,
+   "ratio_mast_roof_raw": 1.0579369469026547,
+   "ratio_mast_front_tyre_raw": 3.861567007787319,
+   "ratio_front_rear_tyre": 0.8492821113828601,
+   "ratio_mast_roof_corr": 1.1295549229384618,
+   "mast_mm_tyre_scale": 3190.560028326179,
+   "roof_mm_tyre_scale": 2824.6169916431772,
+   "roof_check": 0.9952843522350872,
+   "ratio_corr_p10_p90": [
+    1.1094709095456066,
+    1.1508079718931727
+   ],
+   "mast_mm_p10_p90": [
+    3096.94676858329,
+    3284.127415457371
+   ],
+   "best_mast_by_ratio": 3213,
+   "best_mast_by_tyre_scale": 3213
+  },
+  "A_01098.jpg": {
+   "mast_px": 732.5999999999999,
+   "roof_px": 702.3,
+   "front_tyre_px": 191.50738889139495,
+   "rear_tyre_px": 230.6766134656914,
+   "ratio_mast_roof_raw": 1.0431439555745408,
+   "ratio_mast_front_tyre_raw": 3.825439865484574,
+   "ratio_front_rear_tyre": 0.8301985451155321,
+   "ratio_mast_roof_corr": 1.1302441683534017,
+   "mast_mm_tyre_scale": 3177.4805738623936,
+   "roof_mm_tyre_scale": 2811.322245963465,
+   "roof_check": 0.9905998047792336,
+   "ratio_corr_p10_p90": [
+    1.1081317127112706,
+    1.1538820581773739
+   ],
+   "mast_mm_p10_p90": [
+    3076.6649115177256,
+    3276.489016094474
+   ],
+   "best_mast_by_ratio": 3213,
+   "best_mast_by_tyre_scale": 3213
+  }
+ },
+ "impact_if_mast_is": {
+  "2863": {
+   "scale_factor": 0.9913434903047091,
+   "load_height_m": 1.2391793628808865,
+   "per_layer_mm": 309.7948407202216,
+   "pallet_vs_truck_gap_pct": [
+    23.1,
+    28.1
+   ],
+   "C_volume_factor": 0.982761915769523,
+   "A_and_B_image_height_factor": 0.9913434903047091,
+   "D_and_B_crates_factor": 1.0
+  },
+  "2888": {
+   "scale_factor": 1.0,
+   "load_height_m": 1.25,
+   "per_layer_mm": 312.5,
+   "pallet_vs_truck_gap_pct": [
+    22.0,
+    27.0
+   ],
+   "C_volume_factor": 1.0,
+   "A_and_B_image_height_factor": 1.0,
+   "D_and_B_crates_factor": 1.0
+  },
+  "3013": {
+   "scale_factor": 1.0432825484764543,
+   "load_height_m": 1.3041031855955678,
+   "per_layer_mm": 326.02579639889194,
+   "pallet_vs_truck_gap_pct": [
+    16.9,
+    21.7
+   ],
+   "C_volume_factor": 1.0884384759555252,
+   "A_and_B_image_height_factor": 1.0432825484764543,
+   "D_and_B_crates_factor": 1.0
+  },
+  "3213": {
+   "scale_factor": 1.1125346260387812,
+   "load_height_m": 1.3906682825484764,
+   "per_layer_mm": 347.6670706371191,
+   "pallet_vs_truck_gap_pct": [
+    9.7,
+    14.2
+   ],
+   "C_volume_factor": 1.2377332941352506,
+   "A_and_B_image_height_factor": 1.1125346260387812,
+   "D_and_B_crates_factor": 1.0
+  },
+  "3363": {
+   "scale_factor": 1.1644736842105263,
+   "load_height_m": 1.455592105263158,
+   "per_layer_mm": 363.8980263157895,
+   "pallet_vs_truck_gap_pct": [
+    4.8,
+    9.1
+   ],
+   "C_volume_factor": 1.3559989612188366,
+   "A_and_B_image_height_factor": 1.1644736842105263,
+   "D_and_B_crates_factor": 1.0
+  },
+  "3563": {
+   "scale_factor": 1.2337257617728532,
+   "load_height_m": 1.5421572022160666,
+   "per_layer_mm": 385.5393005540166,
+   "pallet_vs_truck_gap_pct": [
+    -1.1,
+    2.9
+   ],
+   "C_volume_factor": 1.5220792552620068,
+   "A_and_B_image_height_factor": 1.2337257617728532,
+   "D_and_B_crates_factor": 1.0
+  },
+  "3963": {
+   "scale_factor": 1.372229916897507,
+   "load_height_m": 1.7152873961218837,
+   "per_layer_mm": 428.82184903047096,
+   "pallet_vs_truck_gap_pct": [
+    -11.1,
+    -7.4
+   ],
+   "C_volume_factor": 1.883014944828539,
+   "A_and_B_image_height_factor": 1.372229916897507,
+   "D_and_B_crates_factor": 1.0
+  }
+ },
+ "pooled": {
+  "ratio_corr_mean": 1.129137124579653,
+  "best_mast": 3213
+ }
+}

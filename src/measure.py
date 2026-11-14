@@ -4,7 +4,10 @@ import json, numpy as np, cv2
 
 # ---- known sizes (mm) ----
 PAL_H = 144                        # EUR pallet height. ASSUMPTION: the pallet really is a EUR pallet
-TRUCK_L2, TRUCK_H1 = 3503, 2888    # Linde E60/E80 datasheet rows 4.20 and 4.2 (see README sources)
+TRUCK_L2 = 3503                   # Linde E60/E80 datasheet row 4.20 (see README sources)
+TRUCK_H1 = 3213                   # lowered mast height of the mast IN THE VIDEO: 3213 mm (checked in src/mast_check.py from the mast/roof
+                                  # ratio and the tyres). 2888 mm (datasheet row 4.2) is only the shortest mast and was the wrong one.
+MAST_CLICKS = "outputs/points_mast.json"   # mast_top / mast_floor (floor directly below the mast), clicked with src/annotate_mast.py
 CASES = {"A one EUR pallet": 1200, "B two pallets in a row": 2400}   # length along the long face (mm)
 WIDTHS = (0.8, 1.2)                # m. NOT visible in this view. 0.8 = EUR short side, 1.2 = pallet turned the other way
 FOCAL_PX = (800, 1400)             # ASSUMED camera focal length in pixels (about 100 deg .. 70 deg wide on a 1920 px image). Unknown!
@@ -13,7 +16,31 @@ def load_points():
     f = lambda p: {k: v for k, v in json.load(open(p)).items()}
     r1, r2 = f("outputs/points_run1.json")["A_01092.jpg"], f("outputs/points_run2.json")["A_01092.jpg"]
     avg = {n: list(np.mean([r1[n], r2[n]], axis=0)) for n in r1 if r1[n] is not None and r2.get(n) is not None}
-    return {"1086": f("outputs/points_1086.json")["A_01086.jpg"], "1092": avg, "1098": f("outputs/points_1098.json")["A_01098.jpg"]}
+    P = {"1086": f("outputs/points_1086.json")["A_01086.jpg"], "1092": avg, "1098": f("outputs/points_1098.json")["A_01098.jpg"]}
+    mast = f(MAST_CLICKS)
+    for k in P:                                                       # add the mast-ruler clicks (floor directly below the mast)
+        m = mast.get(f"A_0{k}.jpg", {})
+        if m.get("mast_top") and m.get("mast_floor"): P[k] = dict(P[k], mast_top=m["mast_top"], mast_floor=m["mast_floor"])
+    return P
+
+def floor_corr():
+    """Old ruler pixels (mast top -> floor under the front wheel) / new ruler pixels (mast top -> floor directly below the mast),
+    mean over the frames that have both. About 1.017: the old floor point lies a little lower in the image (wheel is nearer the camera)."""
+    r = [old_px(P) / abs(P["mast_floor"][1] - P["mast_top"][1]) for P in load_points().values() if "mast_floor" in P]
+    return float(np.mean(r))
+
+old_px = lambda P: abs(P["ref_front_wheel_ground"][1] - P["ref_mast_top"][1])
+
+def truck_px(P):
+    """Pixel length of the height ruler (mast, h1 = TRUCK_H1). Returns (main, low_end):
+    main    = mast top -> floor directly below the mast (clicked; for frames without that click: old ruler / floor_corr())
+    low_end = mast top -> floor under the front wheel (old ruler, a little longer in pixels -> smaller heights)."""
+    if P.get("mast_floor") and P.get("mast_top"): return abs(P["mast_floor"][1] - P["mast_top"][1]), old_px(P)
+    return old_px(P) / floor_corr(), old_px(P)
+
+def truck_scale(P):
+    """mm per px from the mast: (main, low_end)."""
+    main, low = truck_px(P); return TRUCK_H1 / main, TRUCK_H1 / low
 
 d = lambda p, q: float(np.hypot(p[0] - q[0], p[1] - q[1]))      # distance in px
 
@@ -26,14 +53,14 @@ def measure(P):
     r["px"] = dict(pallet_len=pal_len, pallet_h_left=pal_h[0], pallet_h_right=pal_h[1], load_len=load_len, load_h_left=load_h[0], load_h_right=load_h[1])
     # --- scales, mm per px ---
     s_pal_h = PAL_H / pal_h[0]                                                # vertical, from pallet height at the LEFT end (next to the mast)
-    s_truck_v = TRUCK_H1 / abs(P["ref_front_wheel_ground"][1] - P["ref_mast_top"][1])      # vertical, from mast height
+    s_truck_v, s_truck_low = truck_scale(P)                                  # vertical, from mast height (main: floor below the mast; low end: old floor point)
     s_truck_h = TRUCK_L2 / abs(P["ref_carriage_face"][0] - P["ref_truck_rear"][0])         # horizontal, truck rear -> fork face
     s_len = {c: L / pal_len for c, L in CASES.items()}                         # horizontal, "single scale" from pallet length
-    r["scale"] = dict(pallet_height=s_pal_h, truck_vertical=s_truck_v, truck_horizontal=s_truck_h, **{"pallet_length_" + c[0]: v for c, v in s_len.items()})
+    r["scale"] = dict(pallet_height=s_pal_h, truck_vertical=s_truck_v, truck_vertical_low=s_truck_low, truck_horizontal=s_truck_h, **{"pallet_length_" + c[0]: v for c, v in s_len.items()})
     # --- load height (m): height of the LEFT edge (next to the mast/carriage) x the vertical scale valid at that depth ---
     h_l, h_r = load_h; rho = h_l / h_r                      # rho < 1: the right end is nearer to the camera
     H = {"pallet144": h_l * s_pal_h / 1000, "truck": h_l * s_truck_v / 1000}
-    r["H_m"] = H; H_lo, H_hi = min(H.values()), max(H.values()); r["rho_left_over_right"] = rho
+    r["H_m"] = H; r["H_truck_low_m"] = h_l * s_truck_low / 1000; H_lo, H_hi = min(H.values()), max(H.values()); r["rho_left_over_right"] = rho
     # --- case C: length of the long face (m), with perspective ---
     # The scale at the right end is s_R = s_L * h_left / h_right (a box has equal edge heights). Sideways part Lx = pixels x mean scale.
     # Depth part dz = difference of the distances of the two ends = focal * (s_R - s_L)   (distance = focal * mm-per-px).

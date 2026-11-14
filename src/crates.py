@@ -3,7 +3,7 @@
   Paderborner datasheets: crate 40 x 30 x 30 cm, 8 crates per layer, 5 layers, EUR pallet, 161 cm incl. pallet.
 Ground truth from my own look at the frame (confirmed by you): 4 layers high, 8 crates along the lower rows (9 on top)."""
 import numpy as np
-from measure import load_points, d, PAL_H
+from measure import load_points, d, PAL_H, truck_scale
 
 CRATE_L, CRATE_W, CRATE_H = 0.400, 0.300, (0.290, 0.300)
 LAYERS, N_ALONG = 4, (8, 9)
@@ -62,4 +62,4 @@ for k, P in load_points().items():
             ok = hi >= h0 * 0.95 and lo <= h1 * 1.05
             row.append(f"{n} crates = {L:.2f} m -> crate {lo*1000:.0f}-{hi*1000:.0f} mm {'FITS' if ok else 'no'}")
         print(f"     {name}: " + " | ".join(row))
-    print(f"     for comparison, crate height from the truck scale = {hl*2888/abs(P['ref_front_wheel_ground'][1]-P['ref_mast_top'][1])/LAYERS:.0f} mm, from the pallet-height scale = {hl*PAL_H/d(P['pallet_BL'],P['pallet_TL'])/LAYERS:.0f} mm")
+    print(f"     for comparison, crate height from the truck scale = {hl*truck_scale(P)[0]/LAYERS:.0f} mm, from the pallet-height scale = {hl*PAL_H/d(P['pallet_BL'],P['pallet_TL'])/LAYERS:.0f} mm")

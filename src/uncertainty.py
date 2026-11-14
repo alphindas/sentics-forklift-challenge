@@ -5,12 +5,12 @@ Clicks vary independently per frame; the other inputs (scale bias, lens, fill, t
 the frames are 0.1-0.24 s apart and share the same systematic errors."""
 import json, numpy as np, matplotlib
 matplotlib.use("Agg"); import matplotlib.pyplot as plt
-from measure import load_points, PAL_H, TRUCK_H1
+from measure import load_points, PAL_H, TRUCK_H1, floor_corr
 
 N = 10_000
-SHARP = {"load_BL", "load_BR", "load_TL", "load_TR", "ref_mast_top", "ref_carriage_face", "pallet_BL", "pallet_BR"}   # click error 2-5 px
+SHARP = {"load_BL", "load_BR", "load_TL", "load_TR", "mast_top", "ref_carriage_face", "pallet_BL", "pallet_BR"}   # click error 2-5 px
 BLURRY_SD = 10.0                                                                                                         # all other points
-NEED = ["load_BL", "load_BR", "load_TL", "load_TR", "ref_mast_top", "ref_front_wheel_ground", "pallet_BL", "pallet_BR", "pallet_TL", "pallet_TR"]
+NEED = ["load_BL", "load_BR", "load_TL", "load_TR", "mast_top", "mast_floor", "pallet_BL", "pallet_BR", "pallet_TL", "pallet_TR"]
 PALLET_V = PAL_H / 1000                      # m, pallet height used for "load + pallets"
 RANGES = {   # (low, high) uniform unless noted. ALL ASSUMED, see README.
     "scale_bias": (-0.10, 0.10),   # truck scale: mast and wheel are at different depths -> +-10 % (assumed)
@@ -27,6 +27,7 @@ def simulate(case, vary, width=0.8, scale="truck", seed=1):
     rng = np.random.default_rng(seed); U = lambda r: rng.uniform(*r, N)
     on = lambda g: g in vary
     bias = U(RANGES["scale_bias"]) if on("scale_bias") else np.zeros(N)
+    floor = rng.uniform(1 / floor_corr(), 1, N) if on("scale_bias") else np.ones(N)   # floor point: below the mast (1) .. under the front wheel (old ruler, low end)
     fill = U(RANGES["fill"]) if on("fill") else np.full(N, NOMINAL["fill"])
     focal = U(RANGES["focal_px"]) if on("focal") else np.full(N, NOMINAL["focal_px"])
     tol = RANGES["tol_m"] if on("pallet_size") else 0.0
@@ -43,8 +44,8 @@ def simulate(case, vary, width=0.8, scale="truck", seed=1):
             pt[n] = np.array(P[n], float) + noise
         dist = lambda a, b: np.hypot(*(pt[a] - pt[b]).T)
         hl, hr = dist("load_BL", "load_TL"), dist("load_BR", "load_TR")
-        if scale == "truck":                      # height ruler: mast height / pixels from mast top to floor under the front wheel (valid at the LEFT end)
-            s_L = TRUCK_H1 / np.abs(pt["ref_front_wheel_ground"][:, 1] - pt["ref_mast_top"][:, 1]) * (1 + bias)
+        if scale == "truck":                      # height ruler: mast height (3213 mm) / pixels from mast top to the floor directly below the mast (valid at the LEFT end)
+            s_L = TRUCK_H1 / np.abs(pt["mast_floor"][:, 1] - pt["mast_top"][:, 1]) * floor * (1 + bias)
         else:                                     # weak cross-check: pallet height 144 mm on ~30 px at the left end
             s_L = PAL_H / dist("pallet_BL", "pallet_TL")
         H = hl * s_L / 1000

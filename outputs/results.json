@@ -2,19 +2,19 @@
  "note": "D (3 pallets) is most likely, not proven: the number of pallets is NOT verified. Volumes in m3, load only, 80 % range (p10-p90) INSIDE each scenario.",
  "scenarios_load_only_m3": {
   "B two pallets, height from image": {
-   "median": 2.29,
-   "p10": 2.09,
-   "p90": 2.5
+   "median": 2.57,
+   "p10": 2.34,
+   "p90": 2.8
   },
   "A one EUR pallet (excluded)": {
-   "median": 1.14,
-   "p10": 1.04,
-   "p90": 1.24
+   "median": 1.28,
+   "p10": 1.16,
+   "p90": 1.39
   },
   "C length from clicks": {
-   "median": 1.75,
-   "p10": 1.47,
-   "p90": 2.06
+   "median": 2.2,
+   "p10": 1.85,
+   "p90": 2.59
   },
   "B two pallets, height from crates": {
    "median": 2.37,
@@ -28,18 +28,18 @@
   }
  },
  "per_frame_height_m_truck_scale": {
-  "1086": 1.249,
-  "1092": 1.252,
-  "1098": 1.239,
-  "1062": 1.293,
-  "1068": 1.282
+  "1086": 1.414,
+  "1092": 1.411,
+  "1098": 1.406,
+  "1062": 1.462,
+  "1068": 1.45
  },
  "per_frame_height_m_pallet_scale": {
   "1086": 1.496,
   "1092": 1.434,
   "1098": 1.493
  },
- "length_lower_bound_m_frame_1068": 1.96,
+ "length_lower_bound_m_frame_1068": 2.21,
  "monte_carlo_runs": 10000,
  "ranges_assumed": {
   "scale_bias": [

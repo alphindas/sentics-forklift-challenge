@@ -21,6 +21,7 @@ def make_points(turn_deg, z_left=6.0, length=TRUE_L, height=TRUE_H, noise_px=0.0
     P = {"pallet_BL": project(xl, zl, 0), "pallet_BR": project(xr, zr, 0), "pallet_TL": project(xl, zl, pal), "pallet_TR": project(xr, zr, pal),
          "load_BL": project(xl, zl, pal), "load_BR": project(xr, zr, pal), "load_TL": project(xl, zl, top), "load_TR": project(xr, zr, top),
          "ref_mast_top": project(xl - 0.3, zl, TRUCK_H1 / 1000), "ref_front_wheel_ground": project(xl - 0.3, zl, 0),
+         "mast_top": project(xl - 0.3, zl, TRUCK_H1 / 1000), "mast_floor": project(xl - 0.3, zl, 0),
          "ref_carriage_face": project(xl, zl, 0.5), "ref_truck_rear": project(xl - TRUCK_L2 / 1000, zl, 0.5)}
     return {k: tuple(np.array(v) + rng.normal(0, noise_px, 2)) for k, v in P.items()}
 

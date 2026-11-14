@@ -3,7 +3,7 @@ Writes outputs/mast_check.json. Changes NO other result: it only reports what a 
 
 Known sizes (Linde E60/E80 datasheet, series 1279):
   h6 cabin roof (overhead guard) = 2838 mm;  tyres 315/70-15 front and rear: 2*315*0.70 + 15*25.4 = 822 mm diameter
-  h1 lowered mast heights: 2863, 2888 (used so far), 3013, 3213, 3363, 3563, 3963 mm
+  h1 lowered mast heights: 2863, 2888 (used before this check), 3013, 3213, 3363, 3563, 3963 mm
 
 Perspective: front and rear tyre have the same real size, so their pixel heights give the scale (px per mm) at two places along
 the truck. In a pinhole image the scale of points on one straight 3D line is linear in the image x coordinate, so the scale at the
@@ -16,7 +16,7 @@ import json, os, numpy as np
 
 H6, TYRE = 2838.0, 2 * 315 * 0.70 + 15 * 25.4          # mm
 MASTS = [2863, 2888, 3013, 3213, 3363, 3563, 3963]      # h1 lowered, mm
-H1_USED = 2888.0
+H1_USED = 2888.0                                        # mast used BEFORE this check (the impact table compares against it)
 CLICK_SD = 3.0                                          # px, assumed click error for the range (sharp points 2-5 px)
 GAP_NOW = (0.22, 0.27)                                  # README: pallet scale larger than truck scale by 22-27 %
 H_LOAD_NOW = 1.25                                       # m, load height with the truck scale (left end, mean of #1086-#1098)
