@@ -4,7 +4,7 @@ They are NOT your clicked points. Each is good to roughly +-15 px. Replace them 
 Truck sizes come from the Linde E60/E80 datasheet (see README sources)."""
 # --- datasheet rulers (mm) ---
 L2 = 3503            # rear of truck -> fork face (row 4.20)
-H1 = 3213            # lowered mast height of the mast in the video (src/mast_check.py); 2888 = shortest mast, wrong
+H1 = 3213            # lowered mast height of the mast in the video (src/mast_check.py); 2888 was the wrong mast
 FORK = (1200, 1800)  # fork length for the 600 mm / 900 mm load-centre versions (row 4.22)
 # --- eyeballed pixels, frame #1092 ---
 rear_x, carriage_x = 310, 1330          # truck rear end, fork carriage face

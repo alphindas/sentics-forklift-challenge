@@ -1,5 +1,31 @@
 {
- "note": "D (3 pallets) is most likely, not proven: the number of pallets is NOT verified. Volumes in m3, load only, 80 % range (p10-p90) INSIDE each scenario.",
+ "note": "D (3 EUR pallets, 2.4 x 1.2 m, measured height) is most likely, not proven: the number and type of pallets and the depth are NOT verified, and some checks say the load may be longer than 2.4 m. Volumes in m3, load only, 80 % range (p10-p90) INSIDE each scenario.",
+ "most_likely_D_load_only_m3": {
+  "median": 3.87,
+  "p10": 3.53,
+  "p90": 4.23
+ },
+ "most_likely_D_load_plus_pallets_m3": {
+  "median": 4.29,
+  "p10": 3.95,
+  "p90": 4.65
+ },
+ "mast_h1_mm": 3213,
+ "mast_check_ratio_mast_over_roof_corrected": {
+  "A_01086.jpg": 1.128,
+  "A_01092.jpg": 1.13,
+  "A_01098.jpg": 1.13
+ },
+ "mast_check_tyre_scale_mast_mm": {
+  "A_01086.jpg": 3164,
+  "A_01092.jpg": 3191,
+  "A_01098.jpg": 3177
+ },
+ "mast_check_roof_mm_datasheet_2838": {
+  "A_01086.jpg": 2806,
+  "A_01092.jpg": 2825,
+  "A_01098.jpg": 2811
+ },
  "scenarios_load_only_m3": {
   "B two pallets, height from image": {
    "median": 2.57,
@@ -39,7 +65,89 @@
   "1092": 1.434,
   "1098": 1.493
  },
- "length_lower_bound_m_frame_1068": 2.21,
+ "length_lower_bound_m_frame_1068": [
+  2.18,
+  2.21
+ ],
+ "pallet_checks": {
+  "gap_pallet_vs_truck_eur144": {
+   "1086": [
+    0.058,
+    0.077
+   ],
+   "1092": [
+    0.016,
+    0.029
+   ],
+   "1098": [
+    0.062,
+    0.083
+   ]
+  },
+  "gap_if_drinks_pallet_166": {
+   "1086": [
+    0.22,
+    0.241
+   ],
+   "1092": [
+    0.171,
+    0.186
+   ],
+   "1098": [
+    0.224,
+    0.249
+   ]
+  },
+  "pallet_ruler_click_spread": 0.292,
+  "lengths_m": {
+   "#1086 truck ruler (clicked)": [
+    2.04,
+    2.19
+   ],
+   "#1086 pallet ruler (clicked)": [
+    2.2,
+    2.31
+   ],
+   "#1092 truck ruler (clicked)": [
+    1.99,
+    2.17
+   ],
+   "#1092 pallet ruler (clicked)": [
+    2.05,
+    2.2
+   ],
+   "#1098 truck ruler (clicked)": [
+    1.92,
+    2.14
+   ],
+   "#1098 pallet ruler (clicked)": [
+    2.08,
+    2.27
+   ],
+   "#1068 lower bound, truck ruler (clicked; +-15 % for the depth of the right end)": [
+    2.18,
+    2.21
+   ],
+   "#999 truck ruler (points ESTIMATED BY EYE, not clicked)": [
+    2.94,
+    3.08
+   ],
+   "#999 pallet ruler (points ESTIMATED BY EYE, not clicked)": [
+    2.45,
+    2.56
+   ]
+  },
+  "crate_shape_face_length_m": {
+   "as_seen": [
+    2.51,
+    2.89
+   ],
+   "turn_corrected": [
+    2.71,
+    3.19
+   ]
+  }
+ },
  "monte_carlo_runs": 10000,
  "ranges_assumed": {
   "scale_bias": [
@@ -60,9 +168,5 @@
   ],
   "tol_m": 0.003
  },
- "overall_range_m3_across_scenarios": [
-  1.8,
-  3.7
- ],
- "most_likely_scenario": "D (3 pallets, 2.4 x 1.2 m), most likely, not proven"
+ "most_likely_scenario": "D (3 EUR pallets, 2.4 x 1.2 m, measured height), most likely, not proven"
 }

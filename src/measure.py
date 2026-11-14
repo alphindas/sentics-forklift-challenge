@@ -6,7 +6,7 @@ import json, numpy as np, cv2
 PAL_H = 144                        # EUR pallet height. ASSUMPTION: the pallet really is a EUR pallet
 TRUCK_L2 = 3503                   # Linde E60/E80 datasheet row 4.20 (see README sources)
 TRUCK_H1 = 3213                   # lowered mast height of the mast IN THE VIDEO: 3213 mm (checked in src/mast_check.py from the mast/roof
-                                  # ratio and the tyres). 2888 mm (datasheet row 4.2) is only the shortest mast and was the wrong one.
+                                  # ratio and the tyres). 2888 mm (datasheet row 4.2, one of the two shortest masts) was the wrong one.
 MAST_CLICKS = "outputs/points_mast.json"   # mast_top / mast_floor (floor directly below the mast), clicked with src/annotate_mast.py
 CASES = {"A one EUR pallet": 1200, "B two pallets in a row": 2400}   # length along the long face (mm)
 WIDTHS = (0.8, 1.2)                # m. NOT visible in this view. 0.8 = EUR short side, 1.2 = pallet turned the other way
