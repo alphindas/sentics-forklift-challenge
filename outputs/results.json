@@ -1,5 +1,5 @@
 {
- "note": "No single answer: scenario (number of pallets) is NOT verified. Volumes in m3, load only, 80 % range (p10-p90) INSIDE each scenario.",
+ "note": "D (3 pallets) is most likely, not proven: the number of pallets is NOT verified. Volumes in m3, load only, 80 % range (p10-p90) INSIDE each scenario.",
  "scenarios_load_only_m3": {
   "B two pallets, height from image": {
    "median": 2.29,
@@ -64,5 +64,5 @@
   1.8,
   3.7
  ],
- "most_likely_scenario": "D (3 pallets, 2.4 x 1.2 m), unverified"
+ "most_likely_scenario": "D (3 pallets, 2.4 x 1.2 m), most likely, not proven"
 }
