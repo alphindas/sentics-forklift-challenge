@@ -60,3 +60,28 @@ def test_mast_check_recovers_made_up_truck():
     r = m.analyse(P)
     assert abs(r["ratio_mast_roof_corr"] - 3213 / 2838) < 1e-6 and abs(r["mast_mm_tyre_scale"] - 3213) < 0.5 and abs(r["roof_check"] - 1) < 1e-6
     assert m.best_mast(r["ratio_mast_roof_corr"]) == 3213
+
+
+def test_end_view_geometry_recovers_made_up_box():
+    """Made-up box corner: long face 2.4 m, end face 2.4 m (or 1.2 m), at right angles, seen by a pinhole camera with f = 1500 px.
+    faces() must give back the two lengths and 90 degrees from the edge heights in pixels alone."""
+    import end_view as ev
+    f, H, cx = 1500.0, 1.40, ev.CX
+    for end in (2.4, 1.2):
+        a = np.radians(35); C = np.array([0.6, 6.0])                       # near corner (X, Z) in metres
+        L = C + 2.4 * np.array([-np.cos(a), np.sin(a)]); R = C + end * np.array([np.sin(a), np.cos(a)])
+        px = lambda P: dict(x=cx + f * P[0] / P[1], h=f * H / P[1])
+        e = {}
+        for tag, P in (("L", L), ("C", C), ("R", R)):
+            e["x" + tag], e["h" + tag] = px(P)["x"], px(P)["h"]
+        lg, en, ang = ev.faces(e, f, H=H)
+        assert abs(lg - 2.4) < 1e-9 and abs(en - end) < 1e-9 and abs(ang - 90) < 1e-6
+        assert abs(ev.f_right_angle(e) - f) <= 5
+
+
+def test_scenario_E_is_two_pallets_deep():
+    """E = D with twice the depth (2 x 1.2 m + gap): with nothing varied, E / D = (2.4 + gap) / 1.2."""
+    import uncertainty as u
+    d, e = u.simulate("D", set(), width=1.2), u.simulate("E", set(), width=1.2)
+    ratio = np.median(e["V"]) / np.median(d["V"])
+    assert abs(ratio - (2.4 + u.NOMINAL["gap_m"]) / 1.2) < 1e-6

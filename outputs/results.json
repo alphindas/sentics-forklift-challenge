@@ -1,11 +1,55 @@
 {
- "note": "D (3 EUR pallets, 2.4 x 1.2 m, measured height) is most likely, not proven: the number and type of pallets and the depth are NOT verified, and some checks say the load may be longer than 2.4 m. Volumes in m3, load only, 80 % range (p10-p90) INSIDE each scenario.",
- "most_likely_D_load_only_m3": {
+ "note": "E (6 EUR pallets: 3 along the forks x 2 side by side across, 2.4 x 2.4 m, measured height) is the main answer. The side frames hide the depth; the end view at 18.3-19.2 s shows two pallets side by side (6 crates across, double pallet block in the middle, end face about as long as the long side). D (1 pallet deep, 2.4 x 1.2 m) is kept as history. Volumes in m3, 80 % range (p10-p90) INSIDE each scenario; the crate type is still not verified.",
+ "main_answer_E_load_only_m3": {
+  "median": 7.79,
+  "p10": 7.11,
+  "p90": 8.52
+ },
+ "main_answer_E_load_plus_pallets_m3": {
+  "median": 8.64,
+  "p10": 7.95,
+  "p90": 9.36
+ },
+ "end_view": {
+  "frames_s": [
+   18.3,
+   18.6,
+   18.9,
+   19.2
+  ],
+  "counts": {
+   "long_side_columns": 9,
+   "end_face_crates_across": 6,
+   "end_face_blocks": "2 blocks of 3, step between them",
+   "layers": 4,
+   "labels_long_side": "3, on columns 1, 4, 7",
+   "pallet_blocks_under_end_face": "5 positions: corner, block, DOUBLE block, block, corner",
+   "pallet_blocks_under_long_side": "7 positions: double blocks between columns 3/4 and 6/7",
+   "close_up": "EPAL stamp on a pallet corner block (17.4 s)"
+  },
+  "ratio_end_over_long_all_focal": [
+   0.86,
+   1.08
+  ],
+  "ratio_end_over_long_right_angle": [
+   0.93,
+   1.05
+  ],
+  "focal_px_for_right_angle": [
+   1635.0,
+   1805.0
+  ],
+  "predicted_ratio": {
+   "E: 2 pallets across (2.4 / 2.4)": 1.0,
+   "D: 1 pallet across (1.2 / 2.4)": 0.5
+  }
+ },
+ "history_D_load_only_m3": {
   "median": 3.87,
   "p10": 3.53,
   "p90": 4.23
  },
- "most_likely_D_load_plus_pallets_m3": {
+ "history_D_load_plus_pallets_m3": {
   "median": 4.29,
   "p10": 3.95,
   "p90": 4.65
@@ -47,10 +91,15 @@
    "p10": 2.15,
    "p90": 2.59
   },
-  "D three pallets 2.4 x 1.2 m, measured height": {
+  "D three pallets 2.4 x 1.2 m, measured height (history)": {
    "median": 3.87,
    "p10": 3.53,
    "p90": 4.23
+  },
+  "E six pallets 2.4 x 2.4 m, measured height (MAIN)": {
+   "median": 7.79,
+   "p10": 7.11,
+   "p90": 8.52
   }
  },
  "per_frame_height_m_truck_scale": {
@@ -168,5 +217,5 @@
   ],
   "tol_m": 0.003
  },
- "most_likely_scenario": "D (3 EUR pallets, 2.4 x 1.2 m, measured height), most likely, not proven"
+ "main_scenario": "E (6 EUR pallets, 3 along x 2 across, 2.4 x 2.4 m, measured height); replaces D (1 pallet deep) after the end view"
 }
