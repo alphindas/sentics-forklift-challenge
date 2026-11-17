@@ -163,7 +163,7 @@ The datasheet lists no fork longer than 1800 mm for the E80 but mentions "hook-o
 * Case A is excluded: the pallet long edge is about 14 times its height in the image (a 1200 x 144 mm face would be 8.3).
 
 ## Where the crate type came from (and did not)
-* Stickers on the crates were cropped at full resolution and upscaled 6 times (`outputs/stickers_sheet.png`): they show paper labels with text lines and two barcodes. **Nothing is readable** (no brand, pack size or article number).
+* Stickers on the crates were cropped at full resolution and upscaled 6 times: they show paper labels with text lines and two barcodes. **Nothing is readable** (no brand, pack size or article number).
 * The video's title card says "LINDE E80 IN DER GETRÄNKEINDUSTRIE, Carolinenbrunnen, Bielefeld"; a caption names Mineralquellen Wüllner GmbH & Co. KG. So the plant is known, the crate is not.
 * No Carolinen datasheet with crate size was found. REWE product pages could not be read by script.
 * Real crates that exist (manufacturer catalogue Delbrouck, read directly): 20 x 0.5 L 400x300x290-302; 12 x 0.75 L 400x266x310-333 and 400x300x291-360; 12 x 1 L 400x300x310-330 and 400x266x314; 12 x 0.7 L 375x266x305.

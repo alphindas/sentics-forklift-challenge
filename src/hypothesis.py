@@ -1,5 +1,5 @@
 """PRELIMINARY test: is the load one EUR pallet (A) or two pallets in a row (B)?
-All pixel numbers below were READ BY EYE (by Claude) from outputs/grid_1092.jpg, frame #1092.
+All pixel numbers below were READ BY EYE (by Claude) from frame #1092 (frames/A_01092.jpg) with a pixel grid drawn on it by src/grid.py.
 They are NOT your clicked points. Each is good to roughly +-15 px. Replace them with clicks later.
 Truck sizes come from the Linde E60/E80 datasheet (see README sources)."""
 # --- datasheet rulers (mm) ---

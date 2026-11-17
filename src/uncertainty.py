@@ -118,16 +118,9 @@ if __name__ == "__main__":
     # weak cross-check: why the pallet-height scale is weak
     r = simulate("B", {"clicks"}, scale="pallet"); r2 = simulate("B", {"clicks"}); print(f"\nclick error alone on the PALLET-height scale -> height spread {100*np.std(r['H'].mean(0))/np.mean(r['H']):.1f}% ; on the TRUCK scale -> {100*np.std(r2['H'].mean(0))/np.mean(r2['H']):.1f}%")
     json.dump({"main_case": res, "scenarios": scen, "sensitivity_pct": sens, "ranges": RANGES, "runs": N}, open("outputs/uncertainty.json", "w"), indent=1)
-    # ---- figures ----
-    fig, ax = plt.subplots(1, 2, figsize=(11, 3.6), sharex=True)
-    for a, c in zip(ax, "CE"):
-        s = sens[c]; ks = sorted(s, key=s.get); a.barh(ks, [s[k] for k in ks], color=["#444" if k == "all together" else "#3a7" for k in ks]); a.set_title(f"Case {c}: spread caused by one input alone"); a.set_xlabel("half of 80% range, % of median volume")
-    plt.tight_layout(); plt.savefig("outputs/uncertainty_bars.png", dpi=130); plt.close()
+    # ---- figure ----
     fig, a = plt.subplots(figsize=(8, 3.8))
     for lab, v, col in (("A one EUR pallet (excluded)", simulate("A", ALL)["V"].mean(0), "#c63"), ("C: clicks + truck geometry", simulate("C", ALL)["V"].mean(0), "#3a7"), ("B: 2 pallets in a row, 8 x 300 mm crates (2.4 m x 0.8 m)", scenario_B_from_crates()["V"], "#37a"), ("D: 3 pallets (2.4 m x 1.2 m), measured height", rd["V"].mean(0), "#a37"), ("E: 6 pallets (2.4 m x 2.4 m), measured height - MAIN", rE["V"].mean(0), "#222")):
         a.hist(v, bins=80, alpha=0.6, color=col, label=lab)
     a.set_xlabel("load-only volume, m3 (width 0.8 m for A, B, C; 1.2 m for D; 2.4 m for E)"); a.set_ylabel("runs out of 10,000"); a.set_ylim(0, a.get_ylim()[1] * 1.45); a.legend(loc="upper center", ncol=2, fontsize=8); plt.tight_layout(); plt.savefig("outputs/volume_hist.png", dpi=130); plt.close()
-    fig, a = plt.subplots(figsize=(6, 3.4)); pf = simulate("C", ALL)["V"]
-    for i, (k, col) in enumerate(zip(("#1086", "#1092", "#1098"), ("#c63", "#37a", "#3a7"))): a.hist(pf[i], bins=60, alpha=0.5, color=col, label=k)
-    a.set_xlabel("case C load-only volume, m3, per frame"); a.legend(); plt.tight_layout(); plt.savefig("outputs/frames_spread.png", dpi=130); plt.close()
-    print("\nsaved outputs/uncertainty.json, uncertainty_bars.png, volume_hist.png, frames_spread.png")
+    print("\nsaved outputs/uncertainty.json, volume_hist.png")
